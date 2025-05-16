@@ -1,32 +1,32 @@
 use crate::models::poke_api::PokeApiModel;
 use crate::traits::has_id::HasId;
 use crate::traits::has_localized_name::HasLocalizedName;
-use poke_data::models::ability::AbilityId;
 use poke_data::models::language::LanguageId;
+use poke_data::models::region::RegionId;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct AbilityNameData {
-    ability_id: AbilityId,
+pub struct RegionNameData {
+    region_id: RegionId,
     local_language_id: LanguageId,
     name: String,
 }
 
-impl PokeApiModel for AbilityNameData {
+impl PokeApiModel for RegionNameData {
     fn file_name() -> &'static str {
-        "ability_names"
+        "region_names"
     }
 }
 
-impl HasId for AbilityNameData {
-    type Id = AbilityId;
+impl HasId for RegionNameData {
+    type Id = RegionId;
 
     fn id(&self) -> Self::Id {
-        self.ability_id
+        self.region_id
     }
 }
 
-impl HasLocalizedName for AbilityNameData {
+impl HasLocalizedName for RegionNameData {
     fn language(&self) -> LanguageId {
         self.local_language_id
     }

@@ -3,7 +3,7 @@ use crate::traits::get_model::GetModel;
 use crate::traits::has_id::HasId;
 use crate::traits::into_model::IntoModel;
 use crate::RawData;
-use poke_data::models::ability::{Ability, AbilityId};
+use poke_data::models::ability::{AbilityId, UnlinkedAbility};
 use poke_data::models::generation::GenerationId;
 use serde::{Deserialize, Serialize};
 
@@ -29,9 +29,9 @@ impl HasId for AbilityData {
     }
 }
 
-impl IntoModel<Ability> for AbilityData {
-    fn into_model(self, data: &RawData) -> Ability {
-        Ability {
+impl IntoModel<UnlinkedAbility> for AbilityData {
+    fn into_model(self, data: &RawData) -> UnlinkedAbility {
+        UnlinkedAbility {
             id: self.id,
             identifier: self.identifier,
             names: data.ability_names.get_model(&self.id, data),

@@ -4,11 +4,20 @@ use crate::models::poke_api::ability_changelog_prose::AbilityChangelogProseData;
 use crate::models::poke_api::ability_flavor_text::AbilityFlavorTextData;
 use crate::models::poke_api::ability_names::AbilityNameData;
 use crate::models::poke_api::ability_prose::AbilityProseData;
+use crate::models::poke_api::egg_group::EggGroupData;
+use crate::models::poke_api::egg_group_prose::EggGroupProseData;
+use crate::models::poke_api::generation::GenerationData;
+use crate::models::poke_api::generation_names::GenerationNameData;
+use crate::models::poke_api::region::RegionData;
+use crate::models::poke_api::region_names::RegionNameData;
 use crate::models::RemoteModel;
 use crate::traits::has_id::IntoIdMap;
 use crate::traits::into_model::IntoModel;
 use poke_data::models::ability::AbilityId;
-use poke_data::PokeData;
+use poke_data::models::egg_group::EggGroupId;
+use poke_data::models::generation::GenerationId;
+use poke_data::models::region::RegionId;
+use poke_data::UnlinkedPokeData;
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::Path;
@@ -24,6 +33,12 @@ pub struct RawData {
     pub ability_flavor_texts: HashMap<AbilityId, Vec<AbilityFlavorTextData>>,
     pub ability_names: HashMap<AbilityId, Vec<AbilityNameData>>,
     pub ability_prose: HashMap<AbilityId, Vec<AbilityProseData>>,
+    pub egg_groups: HashMap<EggGroupId, EggGroupData>,
+    pub egg_group_prose: HashMap<EggGroupId, Vec<EggGroupProseData>>,
+    pub generations: HashMap<GenerationId, GenerationData>,
+    pub generation_names: HashMap<GenerationId, Vec<GenerationNameData>>,
+    pub regions: HashMap<RegionId, RegionData>,
+    pub region_names: HashMap<RegionId, Vec<RegionNameData>>,
 }
 
 impl RawData {
@@ -45,12 +60,25 @@ impl RawData {
             ability_prose: AbilityProseData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
+            egg_groups: EggGroupData::load(base_path).await?.into_id_map(),
+            egg_group_prose: EggGroupProseData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            generations: GenerationData::load(base_path).await?.into_id_map(),
+            generation_names: GenerationNameData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            regions: RegionData::load(base_path).await?.into_id_map(),
+            region_names: RegionNameData::load(base_path).await?.into_id_map_grouped(),
         })
     }
 
-    pub fn parse(&self) -> PokeData {
-        PokeData {
+    pub fn parse(&self) -> UnlinkedPokeData {
+        UnlinkedPokeData {
             abilities: self.abilities.clone().into_model(self),
+            egg_groups: self.egg_groups.clone().into_model(self),
+            generations: self.generations.clone().into_model(self),
+            regions: self.regions.clone().into_model(self),
         }
     }
 }

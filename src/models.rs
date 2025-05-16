@@ -1,7 +1,9 @@
 pub mod ability;
+pub mod egg_group;
 pub mod flavor_texts;
 pub mod generation;
 pub mod language;
 pub mod localized_effects;
 pub mod localized_names;
+pub mod region;
 pub mod version_group;

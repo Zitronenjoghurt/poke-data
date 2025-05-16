@@ -3,7 +3,7 @@ use crate::models::version_group::VersionGroupId;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FlavorTexts(HashMap<LanguageId, Vec<FlavorText>>);
 
 impl FlavorTexts {
@@ -12,7 +12,7 @@ impl FlavorTexts {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FlavorText {
     pub version_group_id: VersionGroupId,
     pub flavor_text: String,

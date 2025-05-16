@@ -2,3 +2,4 @@
 
 data:
 	cd parse && cargo run --bin generate-data
+	cargo test

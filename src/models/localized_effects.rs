@@ -2,7 +2,7 @@ use crate::models::language::LanguageId;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LocalizedEffects(HashMap<LanguageId, LocalizedEffect>);
 
 impl LocalizedEffects {
@@ -11,7 +11,7 @@ impl LocalizedEffects {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LocalizedEffect {
     pub effect: String,
     pub short_effect: String,
