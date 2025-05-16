@@ -13,6 +13,8 @@ pub mod egg_group;
 pub mod egg_group_prose;
 pub mod generation;
 pub mod generation_names;
+pub mod pokemon;
+pub mod pokemon_abilities;
 pub mod region;
 pub mod region_names;
 

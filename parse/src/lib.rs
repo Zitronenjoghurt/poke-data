@@ -8,6 +8,8 @@ use crate::models::poke_api::egg_group::EggGroupData;
 use crate::models::poke_api::egg_group_prose::EggGroupProseData;
 use crate::models::poke_api::generation::GenerationData;
 use crate::models::poke_api::generation_names::GenerationNameData;
+use crate::models::poke_api::pokemon::PokemonData;
+use crate::models::poke_api::pokemon_abilities::PokemonAbilityData;
 use crate::models::poke_api::region::RegionData;
 use crate::models::poke_api::region_names::RegionNameData;
 use crate::models::RemoteModel;
@@ -16,6 +18,7 @@ use crate::traits::into_model::IntoModel;
 use poke_data::models::ability::AbilityId;
 use poke_data::models::egg_group::EggGroupId;
 use poke_data::models::generation::GenerationId;
+use poke_data::models::pokemon::PokemonId;
 use poke_data::models::region::RegionId;
 use poke_data::UnlinkedPokeData;
 use std::collections::HashMap;
@@ -37,6 +40,8 @@ pub struct RawData {
     pub egg_group_prose: HashMap<EggGroupId, Vec<EggGroupProseData>>,
     pub generations: HashMap<GenerationId, GenerationData>,
     pub generation_names: HashMap<GenerationId, Vec<GenerationNameData>>,
+    pub pokemon: HashMap<PokemonId, PokemonData>,
+    pub pokemon_abilities: HashMap<PokemonId, Vec<PokemonAbilityData>>,
     pub regions: HashMap<RegionId, RegionData>,
     pub region_names: HashMap<RegionId, Vec<RegionNameData>>,
 }
@@ -68,6 +73,10 @@ impl RawData {
             generation_names: GenerationNameData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
+            pokemon: PokemonData::load(base_path).await?.into_id_map(),
+            pokemon_abilities: PokemonAbilityData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             regions: RegionData::load(base_path).await?.into_id_map(),
             region_names: RegionNameData::load(base_path).await?.into_id_map_grouped(),
         })
@@ -79,6 +88,7 @@ impl RawData {
             egg_groups: self.egg_groups.clone().into_model(self),
             generations: self.generations.clone().into_model(self),
             regions: self.regions.clone().into_model(self),
+            pokemon: self.pokemon.clone().into_model(self),
         }
     }
 }

@@ -1,6 +1,7 @@
 use crate::models::ability::{Ability, AbilityId, UnlinkedAbility};
 use crate::models::egg_group::{EggGroup, EggGroupId};
 use crate::models::generation::{Generation, GenerationId, UnlinkedGeneration};
+use crate::models::pokemon::{Pokemon, PokemonId, UnlinkedPokemon};
 use crate::models::region::{Region, RegionId};
 use crate::traits::into_arc_map::IntoArcMap;
 use flate2::read::ZlibDecoder;
@@ -20,6 +21,7 @@ pub struct UnlinkedPokeData {
     pub abilities: HashMap<AbilityId, UnlinkedAbility>,
     pub egg_groups: HashMap<EggGroupId, EggGroup>,
     pub generations: HashMap<GenerationId, UnlinkedGeneration>,
+    pub pokemon: HashMap<PokemonId, UnlinkedPokemon>,
     pub regions: HashMap<RegionId, Region>,
 }
 
@@ -48,10 +50,17 @@ impl UnlinkedPokeData {
             .map(|(id, ability)| (*id, ability.link(&generations)))
             .collect();
 
+        let pokemon = self
+            .pokemon
+            .iter()
+            .map(|(id, pokemon)| (*id, pokemon.link(&abilities)))
+            .collect();
+
         PokeData {
             abilities,
             egg_groups,
             generations,
+            pokemon,
             regions,
         }
     }
@@ -62,6 +71,7 @@ pub struct PokeData {
     pub abilities: HashMap<AbilityId, Arc<Ability>>,
     pub egg_groups: HashMap<EggGroupId, Arc<EggGroup>>,
     pub generations: HashMap<GenerationId, Arc<Generation>>,
+    pub pokemon: HashMap<PokemonId, Arc<Pokemon>>,
     pub regions: HashMap<RegionId, Arc<Region>>,
 }
 

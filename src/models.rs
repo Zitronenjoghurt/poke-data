@@ -5,5 +5,7 @@ pub mod generation;
 pub mod language;
 pub mod localized_effects;
 pub mod localized_names;
+pub mod pokemon;
 pub mod region;
+pub mod species;
 pub mod version_group;
