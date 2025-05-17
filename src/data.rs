@@ -1,0 +1,45 @@
+use crate::models::ability::{Ability, AbilityId};
+use crate::models::berry::{Berry, BerryId};
+use crate::models::berry_firmness::{BerryFirmness, BerryFirmnessId};
+use crate::models::color::{Color, ColorId};
+use crate::models::egg_group::{EggGroup, EggGroupId};
+use crate::models::evolution_trigger::{EvolutionTrigger, EvolutionTriggerId};
+use crate::models::generation::{Generation, GenerationId};
+use crate::models::growth_rate::{GrowthRate, GrowthRateId};
+use crate::models::habitat::{Habitat, HabitatId};
+use crate::models::item::{Item, ItemId};
+use crate::models::pokemon::{Pokemon, PokemonId};
+use crate::models::region::{Region, RegionId};
+use crate::models::shape::{Shape, ShapeId};
+use crate::models::species::{Species, SpeciesId};
+use std::collections::HashMap;
+use std::path::Path;
+use std::sync::Arc;
+use unlinked::UnlinkedPokeData;
+
+pub mod unlinked;
+
+#[derive(Debug)]
+pub struct PokeData {
+    pub abilities: HashMap<AbilityId, Arc<Ability>>,
+    pub berries: HashMap<BerryId, Arc<Berry>>,
+    pub berry_firmnesses: HashMap<BerryFirmnessId, Arc<BerryFirmness>>,
+    pub colors: HashMap<ColorId, Arc<Color>>,
+    pub egg_groups: HashMap<EggGroupId, Arc<EggGroup>>,
+    pub evolution_triggers: HashMap<EvolutionTriggerId, Arc<EvolutionTrigger>>,
+    pub generations: HashMap<GenerationId, Arc<Generation>>,
+    pub growth_rates: HashMap<GrowthRateId, Arc<GrowthRate>>,
+    pub habitats: HashMap<HabitatId, Arc<Habitat>>,
+    pub items: HashMap<ItemId, Arc<Item>>,
+    pub pokemon: HashMap<PokemonId, Arc<Pokemon>>,
+    pub regions: HashMap<RegionId, Arc<Region>>,
+    pub shapes: HashMap<ShapeId, Arc<Shape>>,
+    pub species: HashMap<SpeciesId, Arc<Species>>,
+}
+
+impl PokeData {
+    pub fn load(compressed_data_path: &Path) -> Result<Self, Box<dyn std::error::Error>> {
+        let unlinked_data = UnlinkedPokeData::load(compressed_data_path)?;
+        Ok(unlinked_data.initialize())
+    }
+}

@@ -4,11 +4,19 @@ use crate::models::poke_api::ability_changelog_prose::AbilityChangelogProseData;
 use crate::models::poke_api::ability_flavor_text::AbilityFlavorTextData;
 use crate::models::poke_api::ability_names::AbilityNameData;
 use crate::models::poke_api::ability_prose::AbilityProseData;
+use crate::models::poke_api::berries::BerryData;
+use crate::models::poke_api::berry_firmness::BerryFirmnessData;
+use crate::models::poke_api::berry_firmness_names::BerryFirmnessNameData;
 use crate::models::poke_api::egg_group::EggGroupData;
 use crate::models::poke_api::egg_group_prose::EggGroupProseData;
 use crate::models::poke_api::evolution_chains::{EvolutionChainData, EvolutionChainId};
+use crate::models::poke_api::evolution_trigger_prose::EvolutionTriggerProseData;
+use crate::models::poke_api::evolution_triggers::EvolutionTriggerData;
+use crate::models::poke_api::experience::ExperienceData;
 use crate::models::poke_api::generation::GenerationData;
 use crate::models::poke_api::generation_names::GenerationNameData;
+use crate::models::poke_api::growth_rate_prose::GrowthRateProseData;
+use crate::models::poke_api::growth_rates::GrowthRateData;
 use crate::models::poke_api::item_flavor_text::ItemFlavorTextData;
 use crate::models::poke_api::item_names::ItemNameData;
 use crate::models::poke_api::item_prose::ItemProseData;
@@ -27,17 +35,21 @@ use crate::models::poke_api::region_names::RegionNameData;
 use crate::models::RemoteModel;
 use crate::traits::has_id::IntoIdMap;
 use crate::traits::into_model::IntoModel;
+use poke_data::data::unlinked::UnlinkedPokeData;
 use poke_data::models::ability::AbilityId;
+use poke_data::models::berry::BerryId;
+use poke_data::models::berry_firmness::BerryFirmnessId;
 use poke_data::models::color::ColorId;
 use poke_data::models::egg_group::EggGroupId;
+use poke_data::models::evolution_trigger::EvolutionTriggerId;
 use poke_data::models::generation::GenerationId;
+use poke_data::models::growth_rate::GrowthRateId;
 use poke_data::models::habitat::HabitatId;
 use poke_data::models::item::ItemId;
 use poke_data::models::pokemon::PokemonId;
 use poke_data::models::region::RegionId;
 use poke_data::models::shape::ShapeId;
 use poke_data::models::species::SpeciesId;
-use poke_data::UnlinkedPokeData;
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::Path;
@@ -53,13 +65,21 @@ pub struct RawData {
     pub ability_flavor_texts: HashMap<AbilityId, Vec<AbilityFlavorTextData>>,
     pub ability_names: HashMap<AbilityId, Vec<AbilityNameData>>,
     pub ability_prose: HashMap<AbilityId, Vec<AbilityProseData>>,
+    pub berries: HashMap<BerryId, BerryData>,
+    pub berry_firmnesses: HashMap<BerryFirmnessId, BerryFirmnessData>,
+    pub berry_firmness_names: HashMap<BerryFirmnessId, Vec<BerryFirmnessNameData>>,
     pub colors: HashMap<ColorId, ColorData>,
     pub color_names: HashMap<ColorId, Vec<ColorNameData>>,
     pub egg_groups: HashMap<EggGroupId, EggGroupData>,
     pub egg_group_prose: HashMap<EggGroupId, Vec<EggGroupProseData>>,
     pub evolution_chains: HashMap<EvolutionChainId, EvolutionChainData>,
+    pub evolution_triggers: HashMap<EvolutionTriggerId, EvolutionTriggerData>,
+    pub evolution_trigger_prose: HashMap<EvolutionTriggerId, Vec<EvolutionTriggerProseData>>,
+    pub experiences: HashMap<GrowthRateId, Vec<ExperienceData>>,
     pub generations: HashMap<GenerationId, GenerationData>,
     pub generation_names: HashMap<GenerationId, Vec<GenerationNameData>>,
+    pub growth_rates: HashMap<GrowthRateId, GrowthRateData>,
+    pub growth_rate_prose: HashMap<GrowthRateId, Vec<GrowthRateProseData>>,
     pub habitats: HashMap<HabitatId, HabitatData>,
     pub habitat_names: HashMap<HabitatId, Vec<HabitatNameData>>,
     pub items: HashMap<ItemId, ItemData>,
@@ -94,6 +114,11 @@ impl RawData {
             ability_prose: AbilityProseData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
+            berries: BerryData::load(base_path).await?.into_id_map(),
+            berry_firmnesses: BerryFirmnessData::load(base_path).await?.into_id_map(),
+            berry_firmness_names: BerryFirmnessNameData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             colors: ColorData::load(base_path).await?.into_id_map(),
             color_names: ColorNameData::load(base_path).await?.into_id_map_grouped(),
             egg_groups: EggGroupData::load(base_path).await?.into_id_map(),
@@ -101,8 +126,17 @@ impl RawData {
                 .await?
                 .into_id_map_grouped(),
             evolution_chains: EvolutionChainData::load(base_path).await?.into_id_map(),
+            evolution_triggers: EvolutionTriggerData::load(base_path).await?.into_id_map(),
+            evolution_trigger_prose: EvolutionTriggerProseData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            experiences: ExperienceData::load(base_path).await?.into_id_map_grouped(),
             generations: GenerationData::load(base_path).await?.into_id_map(),
             generation_names: GenerationNameData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            growth_rates: GrowthRateData::load(base_path).await?.into_id_map(),
+            growth_rate_prose: GrowthRateProseData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
             habitats: HabitatData::load(base_path).await?.into_id_map(),
@@ -130,9 +164,13 @@ impl RawData {
     pub fn parse(&self) -> UnlinkedPokeData {
         UnlinkedPokeData {
             abilities: self.abilities.clone().into_model(self),
+            berries: self.berries.clone().into_model(self),
+            berry_firmnesses: self.berry_firmnesses.clone().into_model(self),
             colors: self.colors.clone().into_model(self),
             egg_groups: self.egg_groups.clone().into_model(self),
+            evolution_triggers: self.evolution_triggers.clone().into_model(self),
             generations: self.generations.clone().into_model(self),
+            growth_rates: self.growth_rates.clone().into_model(self),
             habitats: self.habitats.clone().into_model(self),
             items: self.items.clone().into_model(self),
             pokemon: self.pokemon.clone().into_model(self),

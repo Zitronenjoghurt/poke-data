@@ -1,1 +1,1 @@
-pub type LanguageId = u16;
+pub type LanguageId = u8;

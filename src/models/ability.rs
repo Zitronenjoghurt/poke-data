@@ -31,7 +31,15 @@ impl UnlinkedAbility {
             flavor_texts: self.flavor_texts.clone(),
             effects: self.effects.clone(),
             changelog: self.changelog.clone(),
-            generation: generations.get(&self.generation_id).unwrap().clone(),
+            generation: generations
+                .get(&self.generation_id)
+                .unwrap_or_else(|| {
+                    panic!(
+                        "No generation '{}' found for ability '{}'",
+                        self.generation_id, self.id
+                    )
+                })
+                .clone(),
             is_main_series: self.is_main_series,
         };
         Arc::new(ability)

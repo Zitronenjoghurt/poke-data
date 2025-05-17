@@ -1,6 +1,9 @@
 pub mod ability;
+pub mod berry;
+pub mod berry_firmness;
 pub mod color;
 pub mod egg_group;
+pub mod evolution_trigger;
 pub mod flavor_texts;
 pub mod generation;
 pub mod growth_rate;

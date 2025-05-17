@@ -1,6 +1,6 @@
 use crate::models::color::{Color, ColorId};
 use crate::models::generation::{Generation, GenerationId};
-use crate::models::growth_rate::GrowthRateId;
+use crate::models::growth_rate::{GrowthRate, GrowthRateId};
 use crate::models::habitat::{Habitat, HabitatId};
 use crate::models::item::{Item, ItemId};
 use crate::models::shape::{Shape, ShapeId};
@@ -40,6 +40,7 @@ impl UnlinkedSpecies {
         &self,
         colors: &HashMap<ColorId, Arc<Color>>,
         generations: &HashMap<GenerationId, Arc<Generation>>,
+        growth_rates: &HashMap<GrowthRateId, Arc<GrowthRate>>,
         habitats: &HashMap<HabitatId, Arc<Habitat>>,
         items: &HashMap<ItemId, Arc<Item>>,
         shapes: &HashMap<ShapeId, Arc<Shape>>,
@@ -100,7 +101,15 @@ impl UnlinkedSpecies {
             is_baby: self.is_baby,
             hatch_counter: self.hatch_counter,
             has_gender_differences: self.has_gender_differences,
-            growth_rate_id: self.growth_rate_id,
+            growth_rate: growth_rates
+                .get(&self.growth_rate_id)
+                .unwrap_or_else(|| {
+                    panic!(
+                        "No growth rate '{}' found for species '{}'",
+                        self.growth_rate_id, self.id
+                    )
+                })
+                .clone(),
             forms_switchable: self.forms_switchable,
             is_legendary: self.is_legendary,
             is_mythical: self.is_mythical,
@@ -126,7 +135,7 @@ pub struct Species {
     pub is_baby: bool,
     pub hatch_counter: u8,
     pub has_gender_differences: bool,
-    pub growth_rate_id: GrowthRateId,
+    pub growth_rate: Arc<GrowthRate>,
     pub forms_switchable: bool,
     pub is_legendary: bool,
     pub is_mythical: bool,
