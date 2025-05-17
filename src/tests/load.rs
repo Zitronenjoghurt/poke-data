@@ -11,6 +11,6 @@ fn test_load() {
     assert_eq!(stench.generation.identifier, "generation-iii");
     assert_eq!(stench.generation.main_region.identifier, "hoenn");
 
-    let pokemon = data.pokemon.get(&1).unwrap();
+    let pokemon = data.pokemon.get(&143).unwrap();
     println!("{:#?}", pokemon);
 }

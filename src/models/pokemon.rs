@@ -1,6 +1,6 @@
 use crate::models::ability::{Ability, AbilityId};
 use crate::models::pokemon::ability::{PokemonAbility, UnlinkedPokemonAbility};
-use crate::models::species::SpeciesId;
+use crate::models::species::{Species, SpeciesId};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -23,11 +23,23 @@ pub struct UnlinkedPokemon {
 }
 
 impl UnlinkedPokemon {
-    pub fn link(&self, abilities: &HashMap<AbilityId, Arc<Ability>>) -> Arc<Pokemon> {
+    pub fn link(
+        &self,
+        abilities: &HashMap<AbilityId, Arc<Ability>>,
+        species: &HashMap<SpeciesId, Arc<Species>>,
+    ) -> Arc<Pokemon> {
         let pokemon = Pokemon {
             id: self.id,
             identifier: self.identifier.clone(),
-            species_id: self.species_id,
+            species: species
+                .get(&self.species_id)
+                .unwrap_or_else(|| {
+                    panic!(
+                        "No species '{}' found for pokemon '{}'",
+                        self.species_id, self.id
+                    )
+                })
+                .clone(),
             height: self.height,
             weight: self.weight,
             base_experience: self.base_experience,
@@ -43,7 +55,7 @@ impl UnlinkedPokemon {
 pub struct Pokemon {
     pub id: PokemonId,
     pub identifier: String,
-    pub species_id: SpeciesId,
+    pub species: Arc<Species>,
     pub height: u16,
     pub weight: u16,
     pub base_experience: u16,

@@ -14,6 +14,15 @@ pub trait RemoteModel: Sized {
             std::fs::create_dir_all(source_file_path.parent().unwrap())?;
             let client = reqwest::Client::new();
             let response = client.get(Self::source_url()).send().await?;
+            let status = response.status();
+            if !status.is_success() {
+                return Err(format!(
+                    "Request for source file path {} failed with status {}",
+                    source_file_path.display(),
+                    status
+                )
+                .into());
+            }
             let content = response.text().await?;
             std::fs::write(source_file_path, content.clone())?;
             Ok(content)
