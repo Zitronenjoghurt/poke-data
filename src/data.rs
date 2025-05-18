@@ -3,11 +3,14 @@ use crate::models::berry::{Berry, BerryId};
 use crate::models::berry_firmness::{BerryFirmness, BerryFirmnessId};
 use crate::models::color::{Color, ColorId};
 use crate::models::egg_group::{EggGroup, EggGroupId};
+use crate::models::encounter_method::{EncounterMethod, EncounterMethodId};
 use crate::models::evolution_trigger::{EvolutionTrigger, EvolutionTriggerId};
 use crate::models::generation::{Generation, GenerationId};
 use crate::models::growth_rate::{GrowthRate, GrowthRateId};
 use crate::models::habitat::{Habitat, HabitatId};
 use crate::models::item::{Item, ItemId};
+use crate::models::location::{Location, LocationId};
+use crate::models::location_area::{LocationArea, LocationAreaId};
 use crate::models::pokemon::{Pokemon, PokemonId};
 use crate::models::region::{Region, RegionId};
 use crate::models::shape::{Shape, ShapeId};
@@ -27,12 +30,15 @@ pub struct PokeData {
     pub berries: HashMap<BerryId, Arc<Berry>>,
     pub berry_firmnesses: HashMap<BerryFirmnessId, Arc<BerryFirmness>>,
     pub colors: HashMap<ColorId, Arc<Color>>,
+    pub encounter_methods: HashMap<EncounterMethodId, Arc<EncounterMethod>>,
     pub egg_groups: HashMap<EggGroupId, Arc<EggGroup>>,
     pub evolution_triggers: HashMap<EvolutionTriggerId, Arc<EvolutionTrigger>>,
     pub generations: HashMap<GenerationId, Arc<Generation>>,
     pub growth_rates: HashMap<GrowthRateId, Arc<GrowthRate>>,
     pub habitats: HashMap<HabitatId, Arc<Habitat>>,
     pub items: HashMap<ItemId, Arc<Item>>,
+    pub locations: HashMap<LocationId, Arc<Location>>,
+    pub location_areas: HashMap<LocationAreaId, Arc<LocationArea>>,
     pub pokemon: HashMap<PokemonId, Arc<Pokemon>>,
     pub regions: HashMap<RegionId, Arc<Region>>,
     pub shapes: HashMap<ShapeId, Arc<Shape>>,

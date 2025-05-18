@@ -9,6 +9,8 @@ use crate::models::poke_api::berry_firmness::BerryFirmnessData;
 use crate::models::poke_api::berry_firmness_names::BerryFirmnessNameData;
 use crate::models::poke_api::egg_group::EggGroupData;
 use crate::models::poke_api::egg_group_prose::EggGroupProseData;
+use crate::models::poke_api::encounter_method_prose::EncounterMethodProseData;
+use crate::models::poke_api::encounter_methods::EncounterMethodData;
 use crate::models::poke_api::evolution_chains::{EvolutionChainData, EvolutionChainId};
 use crate::models::poke_api::evolution_trigger_prose::EvolutionTriggerProseData;
 use crate::models::poke_api::evolution_triggers::EvolutionTriggerData;
@@ -21,6 +23,12 @@ use crate::models::poke_api::item_flavor_text::ItemFlavorTextData;
 use crate::models::poke_api::item_names::ItemNameData;
 use crate::models::poke_api::item_prose::ItemProseData;
 use crate::models::poke_api::items::ItemData;
+use crate::models::poke_api::location_area_encounter_rates::LocationAreaEncounterRateData;
+use crate::models::poke_api::location_area_prose::LocationAreaProseData;
+use crate::models::poke_api::location_areas::LocationAreaData;
+use crate::models::poke_api::location_game_indices::LocationGameIndexData;
+use crate::models::poke_api::location_names::LocationNameData;
+use crate::models::poke_api::locations::LocationData;
 use crate::models::poke_api::pokemon::PokemonData;
 use crate::models::poke_api::pokemon_abilities::PokemonAbilityData;
 use crate::models::poke_api::pokemon_color_names::ColorNameData;
@@ -46,11 +54,14 @@ use poke_data::models::berry::BerryId;
 use poke_data::models::berry_firmness::BerryFirmnessId;
 use poke_data::models::color::ColorId;
 use poke_data::models::egg_group::EggGroupId;
+use poke_data::models::encounter_method::EncounterMethodId;
 use poke_data::models::evolution_trigger::EvolutionTriggerId;
 use poke_data::models::generation::GenerationId;
 use poke_data::models::growth_rate::GrowthRateId;
 use poke_data::models::habitat::HabitatId;
 use poke_data::models::item::ItemId;
+use poke_data::models::location::LocationId;
+use poke_data::models::location_area::LocationAreaId;
 use poke_data::models::pokemon::PokemonId;
 use poke_data::models::region::RegionId;
 use poke_data::models::shape::ShapeId;
@@ -77,6 +88,8 @@ pub struct RawData {
     pub berry_firmness_names: HashMap<BerryFirmnessId, Vec<BerryFirmnessNameData>>,
     pub colors: HashMap<ColorId, ColorData>,
     pub color_names: HashMap<ColorId, Vec<ColorNameData>>,
+    pub encounter_methods: HashMap<EncounterMethodId, EncounterMethodData>,
+    pub encounter_method_prose: HashMap<EncounterMethodId, Vec<EncounterMethodProseData>>,
     pub egg_groups: HashMap<EggGroupId, EggGroupData>,
     pub egg_group_prose: HashMap<EggGroupId, Vec<EggGroupProseData>>,
     pub evolution_chains: HashMap<EvolutionChainId, EvolutionChainData>,
@@ -93,6 +106,12 @@ pub struct RawData {
     pub item_flavor_texts: HashMap<ItemId, Vec<ItemFlavorTextData>>,
     pub item_names: HashMap<ItemId, Vec<ItemNameData>>,
     pub item_prose: HashMap<ItemId, Vec<ItemProseData>>,
+    pub locations: HashMap<LocationId, LocationData>,
+    pub location_names: HashMap<LocationId, Vec<LocationNameData>>,
+    pub location_game_indices: HashMap<LocationId, Vec<LocationGameIndexData>>,
+    pub location_areas: HashMap<LocationAreaId, LocationAreaData>,
+    pub location_area_encounter_rates: HashMap<LocationAreaId, Vec<LocationAreaEncounterRateData>>,
+    pub location_area_prose: HashMap<LocationAreaId, Vec<LocationAreaProseData>>,
     pub pokemon: HashMap<PokemonId, PokemonData>,
     pub pokemon_abilities: HashMap<PokemonId, Vec<PokemonAbilityData>>,
     pub regions: HashMap<RegionId, RegionData>,
@@ -133,6 +152,10 @@ impl RawData {
                 .into_id_map_grouped(),
             colors: ColorData::load(base_path).await?.into_id_map(),
             color_names: ColorNameData::load(base_path).await?.into_id_map_grouped(),
+            encounter_methods: EncounterMethodData::load(base_path).await?.into_id_map(),
+            encounter_method_prose: EncounterMethodProseData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             egg_groups: EggGroupData::load(base_path).await?.into_id_map(),
             egg_group_prose: EggGroupProseData::load(base_path)
                 .await?
@@ -161,6 +184,20 @@ impl RawData {
                 .into_id_map_grouped(),
             item_names: ItemNameData::load(base_path).await?.into_id_map_grouped(),
             item_prose: ItemProseData::load(base_path).await?.into_id_map_grouped(),
+            locations: LocationData::load(base_path).await?.into_id_map(),
+            location_names: LocationNameData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            location_game_indices: LocationGameIndexData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            location_areas: LocationAreaData::load(base_path).await?.into_id_map(),
+            location_area_encounter_rates: LocationAreaEncounterRateData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            location_area_prose: LocationAreaProseData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             pokemon: PokemonData::load(base_path).await?.into_id_map(),
             pokemon_abilities: PokemonAbilityData::load(base_path)
                 .await?
@@ -190,12 +227,15 @@ impl RawData {
             berries: self.berries.clone().into_model(self),
             berry_firmnesses: self.berry_firmnesses.clone().into_model(self),
             colors: self.colors.clone().into_model(self),
+            encounter_methods: self.encounter_methods.clone().into_model(self),
             egg_groups: self.egg_groups.clone().into_model(self),
             evolution_triggers: self.evolution_triggers.clone().into_model(self),
             generations: self.generations.clone().into_model(self),
             growth_rates: self.growth_rates.clone().into_model(self),
             habitats: self.habitats.clone().into_model(self),
             items: self.items.clone().into_model(self),
+            locations: self.locations.clone().into_model(self),
+            location_areas: self.location_areas.clone().into_model(self),
             pokemon: self.pokemon.clone().into_model(self),
             regions: self.regions.clone().into_model(self),
             shapes: self.shapes.clone().into_model(self),

@@ -24,7 +24,6 @@ fn test_species() {
     assert_eq!(snorlax.identifier, "snorlax");
     assert_eq!(snorlax.generation.identifier, "generation-i");
     assert_eq!(snorlax.growth_rate.identifier, "slow");
-    println!("{:#?}", snorlax);
 }
 
 #[test]
@@ -36,4 +35,30 @@ fn test_version() {
     assert_eq!(red.version_group.identifier, "red-blue");
     assert_eq!(red.version_group.generation.identifier, "generation-i");
     assert_eq!(red.version_group.regions[0].identifier, "kanto")
+}
+
+#[test]
+fn test_location() {
+    let data = load_data();
+    let area = data.location_areas.get(&211).unwrap();
+    assert_eq!(area.game_index, 28);
+    assert_eq!(
+        area.location
+            .names
+            .get_by_language(Language::English)
+            .unwrap()
+            .name,
+        "Ecruteak City"
+    );
+}
+
+#[test]
+fn test_encounter_method() {
+    let data = load_data();
+    let method = data.encounter_methods.get(&1).unwrap();
+    assert_eq!(method.identifier, "walk");
+    assert_eq!(
+        method.names.get_by_language(Language::English),
+        "Walking in tall grass or a cave"
+    );
 }
