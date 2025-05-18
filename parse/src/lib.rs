@@ -19,8 +19,18 @@ use crate::models::poke_api::generation::GenerationData;
 use crate::models::poke_api::generation_names::GenerationNameData;
 use crate::models::poke_api::growth_rate_prose::GrowthRateProseData;
 use crate::models::poke_api::growth_rates::GrowthRateData;
+use crate::models::poke_api::item_categories::ItemCategoryData;
+use crate::models::poke_api::item_category_prose::ItemCategoryProseData;
+use crate::models::poke_api::item_flag_map::ItemFlagMapData;
+use crate::models::poke_api::item_flag_prose::ItemFlagProseData;
+use crate::models::poke_api::item_flags::ItemFlagData;
 use crate::models::poke_api::item_flavor_text::ItemFlavorTextData;
+use crate::models::poke_api::item_fling_effect_prose::ItemFlingEffectProseData;
+use crate::models::poke_api::item_fling_effects::ItemFlingEffectData;
+use crate::models::poke_api::item_game_indices::ItemGameIndexData;
 use crate::models::poke_api::item_names::ItemNameData;
+use crate::models::poke_api::item_pocket_names::ItemPocketNameData;
+use crate::models::poke_api::item_pockets::ItemPocketData;
 use crate::models::poke_api::item_prose::ItemProseData;
 use crate::models::poke_api::items::ItemData;
 use crate::models::poke_api::location_area_encounter_rates::LocationAreaEncounterRateData;
@@ -60,6 +70,10 @@ use poke_data::models::generation::GenerationId;
 use poke_data::models::growth_rate::GrowthRateId;
 use poke_data::models::habitat::HabitatId;
 use poke_data::models::item::ItemId;
+use poke_data::models::item_category::ItemCategoryId;
+use poke_data::models::item_flag::ItemFlagId;
+use poke_data::models::item_fling_effect::ItemFlingEffectId;
+use poke_data::models::item_pocket::ItemPocketId;
 use poke_data::models::location::LocationId;
 use poke_data::models::location_area::LocationAreaId;
 use poke_data::models::pokemon::PokemonId;
@@ -106,6 +120,16 @@ pub struct RawData {
     pub item_flavor_texts: HashMap<ItemId, Vec<ItemFlavorTextData>>,
     pub item_names: HashMap<ItemId, Vec<ItemNameData>>,
     pub item_prose: HashMap<ItemId, Vec<ItemProseData>>,
+    pub item_categories: HashMap<ItemCategoryId, ItemCategoryData>,
+    pub item_category_prose: HashMap<ItemCategoryId, Vec<ItemCategoryProseData>>,
+    pub item_flags: HashMap<ItemFlagId, ItemFlagData>,
+    pub item_flag_map: HashMap<ItemId, Vec<ItemFlagMapData>>,
+    pub item_flag_prose: HashMap<ItemFlagId, Vec<ItemFlagProseData>>,
+    pub item_fling_effects: HashMap<ItemFlingEffectId, ItemFlingEffectData>,
+    pub item_fling_effect_prose: HashMap<ItemFlingEffectId, Vec<ItemFlingEffectProseData>>,
+    pub item_game_indices: HashMap<ItemId, Vec<ItemGameIndexData>>,
+    pub item_pockets: HashMap<ItemPocketId, ItemPocketData>,
+    pub item_pocket_names: HashMap<ItemPocketId, Vec<ItemPocketNameData>>,
     pub locations: HashMap<LocationId, LocationData>,
     pub location_names: HashMap<LocationId, Vec<LocationNameData>>,
     pub location_game_indices: HashMap<LocationId, Vec<LocationGameIndexData>>,
@@ -184,6 +208,28 @@ impl RawData {
                 .into_id_map_grouped(),
             item_names: ItemNameData::load(base_path).await?.into_id_map_grouped(),
             item_prose: ItemProseData::load(base_path).await?.into_id_map_grouped(),
+            item_categories: ItemCategoryData::load(base_path).await?.into_id_map(),
+            item_category_prose: ItemCategoryProseData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            item_flags: ItemFlagData::load(base_path).await?.into_id_map(),
+            item_flag_map: ItemFlagMapData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            item_flag_prose: ItemFlagProseData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            item_fling_effects: ItemFlingEffectData::load(base_path).await?.into_id_map(),
+            item_fling_effect_prose: ItemFlingEffectProseData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            item_game_indices: ItemGameIndexData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            item_pockets: ItemPocketData::load(base_path).await?.into_id_map(),
+            item_pocket_names: ItemPocketNameData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             locations: LocationData::load(base_path).await?.into_id_map(),
             location_names: LocationNameData::load(base_path)
                 .await?
@@ -234,6 +280,10 @@ impl RawData {
             growth_rates: self.growth_rates.clone().into_model(self),
             habitats: self.habitats.clone().into_model(self),
             items: self.items.clone().into_model(self),
+            item_categories: self.item_categories.clone().into_model(self),
+            item_flags: self.item_flags.clone().into_model(self),
+            item_fling_effects: self.item_fling_effects.clone().into_model(self),
+            item_pockets: self.item_pockets.clone().into_model(self),
             locations: self.locations.clone().into_model(self),
             location_areas: self.location_areas.clone().into_model(self),
             pokemon: self.pokemon.clone().into_model(self),

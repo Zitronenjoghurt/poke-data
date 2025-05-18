@@ -1,0 +1,33 @@
+use crate::models::language::LanguageId;
+use crate::types::language::Language;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LocalizedNameDescriptions(HashMap<LanguageId, LocalizedNameDescription>);
+
+impl LocalizedNameDescriptions {
+    pub fn new(localizations: HashMap<LanguageId, LocalizedNameDescription>) -> Self {
+        Self(localizations)
+    }
+
+    pub fn get_by_language(&self, language: Language) -> Option<&LocalizedNameDescription> {
+        let language_id = language as LanguageId;
+        if let Some(target) = self.0.get(&language_id) {
+            return Some(target);
+        }
+
+        let default_language_id = Language::default() as LanguageId;
+        if let Some(default) = self.0.get(&default_language_id) {
+            return Some(default);
+        }
+
+        None
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LocalizedNameDescription {
+    pub name: String,
+    pub description: String,
+}

@@ -62,3 +62,33 @@ fn test_encounter_method() {
         "Walking in tall grass or a cave"
     );
 }
+
+#[test]
+fn test_item() {
+    let data = load_data();
+    let toxic_orb = data.items.get(&249).unwrap();
+    assert_eq!(toxic_orb.identifier, "toxic-orb");
+    assert_eq!(
+        toxic_orb.names.get_by_language(Language::English),
+        "Toxic Orb"
+    );
+    assert_eq!(toxic_orb.cost, 4000);
+    assert_eq!(toxic_orb.fling_power, Some(30));
+    assert_eq!(
+        toxic_orb.category.names.get_by_language(Language::English),
+        "Bad held items"
+    );
+    assert_eq!(toxic_orb.category.pocket.identifier, "misc");
+    assert_eq!(
+        toxic_orb
+            .fling_effect
+            .clone()
+            .unwrap()
+            .effects
+            .get_by_language(Language::English)
+            .unwrap()
+            .effect,
+        "Badly poisons the target."
+    );
+    assert_eq!(toxic_orb.flags.len(), 2);
+}

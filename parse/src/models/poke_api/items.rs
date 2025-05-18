@@ -44,6 +44,8 @@ impl IntoModel<UnlinkedItem> for ItemData {
             cost: self.cost,
             fling_power: self.fling_power,
             fling_effect_id: self.fling_effect_id,
+            flag_ids: data.item_flag_map.get_model(&self.id, data),
+            game_indices: data.item_game_indices.get_model(&self.id, data),
         }
     }
 }

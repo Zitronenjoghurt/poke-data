@@ -9,6 +9,10 @@ use crate::models::generation::{Generation, GenerationId};
 use crate::models::growth_rate::{GrowthRate, GrowthRateId};
 use crate::models::habitat::{Habitat, HabitatId};
 use crate::models::item::{Item, ItemId};
+use crate::models::item_category::{ItemCategory, ItemCategoryId};
+use crate::models::item_flag::{ItemFlag, ItemFlagId};
+use crate::models::item_fling_effect::{ItemFlingEffect, ItemFlingEffectId};
+use crate::models::item_pocket::{ItemPocket, ItemPocketId};
 use crate::models::location::{Location, LocationId};
 use crate::models::location_area::{LocationArea, LocationAreaId};
 use crate::models::pokemon::{Pokemon, PokemonId};
@@ -37,6 +41,10 @@ pub struct PokeData {
     pub growth_rates: HashMap<GrowthRateId, Arc<GrowthRate>>,
     pub habitats: HashMap<HabitatId, Arc<Habitat>>,
     pub items: HashMap<ItemId, Arc<Item>>,
+    pub item_categories: HashMap<ItemCategoryId, Arc<ItemCategory>>,
+    pub item_flags: HashMap<ItemFlagId, Arc<ItemFlag>>,
+    pub item_fling_effects: HashMap<ItemFlingEffectId, Arc<ItemFlingEffect>>,
+    pub item_pockets: HashMap<ItemPocketId, Arc<ItemPocket>>,
     pub locations: HashMap<LocationId, Arc<Location>>,
     pub location_areas: HashMap<LocationAreaId, Arc<LocationArea>>,
     pub pokemon: HashMap<PokemonId, Arc<Pokemon>>,

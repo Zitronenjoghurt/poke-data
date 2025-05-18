@@ -10,6 +10,10 @@ use crate::models::generation::{GenerationId, UnlinkedGeneration};
 use crate::models::growth_rate::{GrowthRate, GrowthRateId};
 use crate::models::habitat::{Habitat, HabitatId};
 use crate::models::item::{ItemId, UnlinkedItem};
+use crate::models::item_category::{ItemCategoryId, UnlinkedItemCategory};
+use crate::models::item_flag::{ItemFlag, ItemFlagId};
+use crate::models::item_fling_effect::{ItemFlingEffect, ItemFlingEffectId};
+use crate::models::item_pocket::{ItemPocket, ItemPocketId};
 use crate::models::location::{LocationId, UnlinkedLocation};
 use crate::models::location_area::{LocationAreaId, UnlinkedLocationArea};
 use crate::models::pokemon::{PokemonId, UnlinkedPokemon};
@@ -38,6 +42,10 @@ pub struct UnlinkedPokeData {
     pub growth_rates: HashMap<GrowthRateId, GrowthRate>,
     pub habitats: HashMap<HabitatId, Habitat>,
     pub items: HashMap<ItemId, UnlinkedItem>,
+    pub item_categories: HashMap<ItemCategoryId, UnlinkedItemCategory>,
+    pub item_flags: HashMap<ItemFlagId, ItemFlag>,
+    pub item_fling_effects: HashMap<ItemFlingEffectId, ItemFlingEffect>,
+    pub item_pockets: HashMap<ItemPocketId, ItemPocket>,
     pub locations: HashMap<LocationId, UnlinkedLocation>,
     pub location_areas: HashMap<LocationAreaId, UnlinkedLocationArea>,
     pub pokemon: HashMap<PokemonId, UnlinkedPokemon>,
@@ -69,6 +77,9 @@ impl UnlinkedPokeData {
         let evolution_triggers = self.evolution_triggers.clone().into_arc_map();
         let growth_rates = self.growth_rates.clone().into_arc_map();
         let habitats = self.habitats.clone().into_arc_map();
+        let item_flags = self.item_flags.clone().into_arc_map();
+        let item_fling_effects = self.item_fling_effects.clone().into_arc_map();
+        let item_pockets = self.item_pockets.clone().into_arc_map();
         let regions = self.regions.clone().into_arc_map();
         let shapes = self.shapes.clone().into_arc_map();
 
@@ -84,10 +95,21 @@ impl UnlinkedPokeData {
             .map(|(id, location_area)| (*id, location_area.link(&locations)))
             .collect();
 
+        let item_categories = self
+            .item_categories
+            .iter()
+            .map(|(id, category)| (*id, category.link(&item_pockets)))
+            .collect();
+
         let items = self
             .items
             .iter()
-            .map(|(id, item)| (*id, item.link()))
+            .map(|(id, item)| {
+                (
+                    *id,
+                    item.link(&item_categories, &item_flags, &item_fling_effects),
+                )
+            })
             .collect();
 
         let berries = self
@@ -156,6 +178,10 @@ impl UnlinkedPokeData {
             growth_rates,
             habitats,
             items,
+            item_categories: Default::default(),
+            item_flags,
+            item_fling_effects,
+            item_pockets,
             locations,
             location_areas,
             pokemon,

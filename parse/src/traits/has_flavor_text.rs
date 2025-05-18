@@ -1,4 +1,3 @@
-use crate::traits::has_localized_name::HasLocalizedName;
 use crate::traits::into_model::IntoModel;
 use crate::RawData;
 use poke_data::models::flavor_texts::{FlavorText, FlavorTexts};

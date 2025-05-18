@@ -1,4 +1,3 @@
-use crate::traits::has_flavor_text::HasFlavorText;
 use crate::traits::into_model::IntoModel;
 use crate::RawData;
 use poke_data::models::language::LanguageId;

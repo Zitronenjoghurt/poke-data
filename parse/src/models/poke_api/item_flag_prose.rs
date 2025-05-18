@@ -1,34 +1,33 @@
 use crate::models::poke_api::PokeApiModel;
 use crate::traits::has_id::HasId;
 use crate::traits::has_localized_name_description::HasLocalizedNameDescription;
+use poke_data::models::item_flag::ItemFlagId;
 use poke_data::models::language::LanguageId;
-use poke_data::models::shape::ShapeId;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ShapeProseData {
-    pokemon_shape_id: ShapeId,
+pub struct ItemFlagProseData {
+    item_flag_id: ItemFlagId,
     local_language_id: LanguageId,
     name: String,
-    awesome_name: String,
     description: String,
 }
 
-impl PokeApiModel for ShapeProseData {
+impl PokeApiModel for ItemFlagProseData {
     fn file_name() -> &'static str {
-        "pokemon_shape_prose"
+        "item_flag_prose"
     }
 }
 
-impl HasId for ShapeProseData {
-    type Id = ShapeId;
+impl HasId for ItemFlagProseData {
+    type Id = ItemFlagId;
 
     fn id(&self) -> Self::Id {
-        self.pokemon_shape_id
+        self.item_flag_id
     }
 }
 
-impl HasLocalizedNameDescription for ShapeProseData {
+impl HasLocalizedNameDescription for ItemFlagProseData {
     fn language(&self) -> LanguageId {
         self.local_language_id
     }
