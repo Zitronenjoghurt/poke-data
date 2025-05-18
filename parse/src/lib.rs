@@ -39,6 +39,8 @@ use crate::models::poke_api::location_areas::LocationAreaData;
 use crate::models::poke_api::location_game_indices::LocationGameIndexData;
 use crate::models::poke_api::location_names::LocationNameData;
 use crate::models::poke_api::locations::LocationData;
+use crate::models::poke_api::move_damage_class_prose::DamageClassProseData;
+use crate::models::poke_api::move_damage_classes::DamageClassData;
 use crate::models::poke_api::pokemon::PokemonData;
 use crate::models::poke_api::pokemon_abilities::PokemonAbilityData;
 use crate::models::poke_api::pokemon_color_names::ColorNameData;
@@ -63,6 +65,7 @@ use poke_data::models::ability::AbilityId;
 use poke_data::models::berry::BerryId;
 use poke_data::models::berry_firmness::BerryFirmnessId;
 use poke_data::models::color::ColorId;
+use poke_data::models::damage_class::DamageClassId;
 use poke_data::models::egg_group::EggGroupId;
 use poke_data::models::encounter_method::EncounterMethodId;
 use poke_data::models::evolution_trigger::EvolutionTriggerId;
@@ -102,6 +105,8 @@ pub struct RawData {
     pub berry_firmness_names: HashMap<BerryFirmnessId, Vec<BerryFirmnessNameData>>,
     pub colors: HashMap<ColorId, ColorData>,
     pub color_names: HashMap<ColorId, Vec<ColorNameData>>,
+    pub damage_classes: HashMap<DamageClassId, DamageClassData>,
+    pub damage_class_prose: HashMap<DamageClassId, Vec<DamageClassProseData>>,
     pub encounter_methods: HashMap<EncounterMethodId, EncounterMethodData>,
     pub encounter_method_prose: HashMap<EncounterMethodId, Vec<EncounterMethodProseData>>,
     pub egg_groups: HashMap<EggGroupId, EggGroupData>,
@@ -176,6 +181,10 @@ impl RawData {
                 .into_id_map_grouped(),
             colors: ColorData::load(base_path).await?.into_id_map(),
             color_names: ColorNameData::load(base_path).await?.into_id_map_grouped(),
+            damage_classes: DamageClassData::load(base_path).await?.into_id_map(),
+            damage_class_prose: DamageClassProseData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             encounter_methods: EncounterMethodData::load(base_path).await?.into_id_map(),
             encounter_method_prose: EncounterMethodProseData::load(base_path)
                 .await?
@@ -273,6 +282,7 @@ impl RawData {
             berries: self.berries.clone().into_model(self),
             berry_firmnesses: self.berry_firmnesses.clone().into_model(self),
             colors: self.colors.clone().into_model(self),
+            damage_classes: self.damage_classes.clone().into_model(self),
             encounter_methods: self.encounter_methods.clone().into_model(self),
             egg_groups: self.egg_groups.clone().into_model(self),
             evolution_triggers: self.evolution_triggers.clone().into_model(self),

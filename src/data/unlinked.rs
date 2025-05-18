@@ -3,6 +3,7 @@ use crate::models::ability::{AbilityId, UnlinkedAbility};
 use crate::models::berry::{BerryId, UnlinkedBerry};
 use crate::models::berry_firmness::{BerryFirmness, BerryFirmnessId};
 use crate::models::color::{Color, ColorId};
+use crate::models::damage_class::{DamageClass, DamageClassId};
 use crate::models::egg_group::{EggGroup, EggGroupId};
 use crate::models::encounter_method::{EncounterMethod, EncounterMethodId};
 use crate::models::evolution_trigger::{EvolutionTrigger, EvolutionTriggerId};
@@ -35,6 +36,7 @@ pub struct UnlinkedPokeData {
     pub berries: HashMap<BerryId, UnlinkedBerry>,
     pub berry_firmnesses: HashMap<BerryFirmnessId, BerryFirmness>,
     pub colors: HashMap<ColorId, Color>,
+    pub damage_classes: HashMap<DamageClassId, DamageClass>,
     pub encounter_methods: HashMap<EncounterMethodId, EncounterMethod>,
     pub egg_groups: HashMap<EggGroupId, EggGroup>,
     pub evolution_triggers: HashMap<EvolutionTriggerId, EvolutionTrigger>,
@@ -72,6 +74,7 @@ impl UnlinkedPokeData {
     pub fn initialize(&self) -> PokeData {
         let berry_firmnesses = self.berry_firmnesses.clone().into_arc_map();
         let colors = self.colors.clone().into_arc_map();
+        let damage_classes = self.damage_classes.clone().into_arc_map();
         let encounter_methods = self.encounter_methods.clone().into_arc_map();
         let egg_groups = self.egg_groups.clone().into_arc_map();
         let evolution_triggers = self.evolution_triggers.clone().into_arc_map();
@@ -171,6 +174,7 @@ impl UnlinkedPokeData {
             berries,
             berry_firmnesses,
             colors,
+            damage_classes,
             encounter_methods,
             egg_groups,
             evolution_triggers,

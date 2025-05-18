@@ -2,6 +2,7 @@ pub mod ability;
 pub mod berry;
 pub mod berry_firmness;
 pub mod color;
+pub mod damage_class;
 pub mod egg_group;
 pub mod encounter_method;
 pub mod evolution_trigger;

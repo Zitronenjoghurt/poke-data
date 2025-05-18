@@ -92,3 +92,18 @@ fn test_item() {
     );
     assert_eq!(toxic_orb.flags.len(), 2);
 }
+
+#[test]
+fn test_damage_class() {
+    let data = load_data();
+    let physical = data.damage_classes.get(&2).unwrap();
+    assert_eq!(physical.identifier, "physical");
+    assert_eq!(
+        physical
+            .prose
+            .get_by_language(Language::English)
+            .unwrap()
+            .description,
+        "Physical damage, controlled by Attack and Defense"
+    );
+}
