@@ -12,6 +12,8 @@ use crate::models::pokemon::{Pokemon, PokemonId};
 use crate::models::region::{Region, RegionId};
 use crate::models::shape::{Shape, ShapeId};
 use crate::models::species::{Species, SpeciesId};
+use crate::models::version::{Version, VersionId};
+use crate::models::version_group::{VersionGroup, VersionGroupId};
 use std::collections::HashMap;
 use std::path::Path;
 use std::sync::Arc;
@@ -35,11 +37,18 @@ pub struct PokeData {
     pub regions: HashMap<RegionId, Arc<Region>>,
     pub shapes: HashMap<ShapeId, Arc<Shape>>,
     pub species: HashMap<SpeciesId, Arc<Species>>,
+    pub versions: HashMap<VersionId, Arc<Version>>,
+    pub version_groups: HashMap<VersionGroupId, Arc<VersionGroup>>,
 }
 
 impl PokeData {
-    pub fn load(compressed_data_path: &Path) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn load_path(compressed_data_path: &Path) -> Result<Self, Box<dyn std::error::Error>> {
         let unlinked_data = UnlinkedPokeData::load(compressed_data_path)?;
+        Ok(unlinked_data.initialize())
+    }
+
+    pub fn load_bytes(bytes: &[u8]) -> Result<Self, Box<dyn std::error::Error>> {
+        let unlinked_data = UnlinkedPokeData::from_bytes(bytes)?;
         Ok(unlinked_data.initialize())
     }
 }

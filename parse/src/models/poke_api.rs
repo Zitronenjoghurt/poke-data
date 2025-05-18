@@ -37,6 +37,11 @@ pub mod pokemon_shapes;
 pub mod pokemon_species;
 pub mod region;
 pub mod region_names;
+pub mod version_group_pokemon_move_methods;
+pub mod version_group_regions;
+pub mod version_groups;
+pub mod version_names;
+pub mod versions;
 
 pub const POKEAPI_DATA_BASE_URL: &str =
     "https://raw.githubusercontent.com/PokeAPI/pokeapi/refs/heads/master/data/v2/csv";

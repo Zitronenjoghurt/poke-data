@@ -32,6 +32,11 @@ use crate::models::poke_api::pokemon_shapes::ShapeData;
 use crate::models::poke_api::pokemon_species::PokemonSpeciesData;
 use crate::models::poke_api::region::RegionData;
 use crate::models::poke_api::region_names::RegionNameData;
+use crate::models::poke_api::version_group_pokemon_move_methods::VersionGroupMoveMethodData;
+use crate::models::poke_api::version_group_regions::VersionGroupRegionData;
+use crate::models::poke_api::version_groups::VersionGroupData;
+use crate::models::poke_api::version_names::VersionNameData;
+use crate::models::poke_api::versions::VersionData;
 use crate::models::RemoteModel;
 use crate::traits::has_id::IntoIdMap;
 use crate::traits::into_model::IntoModel;
@@ -50,6 +55,8 @@ use poke_data::models::pokemon::PokemonId;
 use poke_data::models::region::RegionId;
 use poke_data::models::shape::ShapeId;
 use poke_data::models::species::SpeciesId;
+use poke_data::models::version::VersionId;
+use poke_data::models::version_group::VersionGroupId;
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::Path;
@@ -93,6 +100,11 @@ pub struct RawData {
     pub shapes: HashMap<ShapeId, ShapeData>,
     pub shape_prose: HashMap<ShapeId, Vec<ShapeProseData>>,
     pub species: HashMap<SpeciesId, PokemonSpeciesData>,
+    pub version_groups: HashMap<VersionGroupId, VersionGroupData>,
+    pub version_group_move_methods: HashMap<VersionGroupId, Vec<VersionGroupMoveMethodData>>,
+    pub version_group_regions: HashMap<VersionGroupId, Vec<VersionGroupRegionData>>,
+    pub versions: HashMap<VersionId, VersionData>,
+    pub version_names: HashMap<VersionId, Vec<VersionNameData>>,
 }
 
 impl RawData {
@@ -158,6 +170,17 @@ impl RawData {
             shapes: ShapeData::load(base_path).await?.into_id_map(),
             shape_prose: ShapeProseData::load(base_path).await?.into_id_map_grouped(),
             species: PokemonSpeciesData::load(base_path).await?.into_id_map(),
+            version_groups: VersionGroupData::load(base_path).await?.into_id_map(),
+            version_group_move_methods: VersionGroupMoveMethodData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            version_group_regions: VersionGroupRegionData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            versions: VersionData::load(base_path).await?.into_id_map(),
+            version_names: VersionNameData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
         })
     }
 
@@ -177,6 +200,8 @@ impl RawData {
             regions: self.regions.clone().into_model(self),
             shapes: self.shapes.clone().into_model(self),
             species: self.species.clone().into_model(self),
+            version_groups: self.version_groups.clone().into_model(self),
+            versions: self.versions.clone().into_model(self),
         }
     }
 }

@@ -13,6 +13,8 @@ use crate::models::pokemon::{PokemonId, UnlinkedPokemon};
 use crate::models::region::{Region, RegionId};
 use crate::models::shape::{Shape, ShapeId};
 use crate::models::species::{SpeciesId, UnlinkedSpecies};
+use crate::models::version::{UnlinkedVersion, VersionId};
+use crate::models::version_group::{UnlinkedVersionGroup, VersionGroupId};
 use crate::traits::into_arc_map::IntoArcMap;
 use flate2::read::ZlibDecoder;
 use serde::{Deserialize, Serialize};
@@ -36,6 +38,8 @@ pub struct UnlinkedPokeData {
     pub regions: HashMap<RegionId, Region>,
     pub shapes: HashMap<ShapeId, Shape>,
     pub species: HashMap<SpeciesId, UnlinkedSpecies>,
+    pub versions: HashMap<VersionId, UnlinkedVersion>,
+    pub version_groups: HashMap<VersionGroupId, UnlinkedVersionGroup>,
 }
 
 impl UnlinkedPokeData {
@@ -45,6 +49,10 @@ impl UnlinkedPokeData {
         let mut decompressed_data = Vec::new();
         decompressor.read_to_end(&mut decompressed_data)?;
         Ok(bincode::deserialize(&decompressed_data)?)
+    }
+
+    pub fn from_bytes(data: &[u8]) -> Result<Self, Box<dyn std::error::Error>> {
+        Ok(bincode::deserialize(data)?)
     }
 
     pub fn initialize(&self) -> PokeData {
@@ -73,6 +81,18 @@ impl UnlinkedPokeData {
             .generations
             .iter()
             .map(|(id, generation)| (*id, generation.link(&regions)))
+            .collect();
+
+        let version_groups = self
+            .version_groups
+            .iter()
+            .map(|(id, version_group)| (*id, version_group.link(&generations, &regions)))
+            .collect();
+
+        let versions = self
+            .versions
+            .iter()
+            .map(|(id, version)| (*id, version.link(&version_groups)))
             .collect();
 
         let abilities = self
@@ -120,6 +140,8 @@ impl UnlinkedPokeData {
             regions,
             shapes,
             species,
+            version_groups,
+            versions,
         }
     }
 }
