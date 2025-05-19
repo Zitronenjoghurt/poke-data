@@ -1,3 +1,4 @@
+mod collections;
 pub mod data;
 pub mod models;
 #[cfg(test)]

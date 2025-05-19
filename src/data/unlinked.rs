@@ -1,3 +1,4 @@
+use crate::collections::pokemon_type_efficacies::PokemonTypeEfficaciesCollection;
 use crate::data::linkable::Linkable;
 use crate::data::PokeData;
 use crate::models::ability::{AbilityId, UnlinkedAbility};
@@ -19,6 +20,10 @@ use crate::models::item_pocket::{ItemPocket, ItemPocketId};
 use crate::models::location::{LocationId, UnlinkedLocation};
 use crate::models::location_area::{LocationAreaId, UnlinkedLocationArea};
 use crate::models::pokemon::{PokemonId, UnlinkedPokemon};
+use crate::models::pokemon_type::{PokemonTypeId, UnlinkedPokemonType};
+use crate::models::pokemon_type_efficacies::{
+    PokemonTypeEfficacies, PokemonTypeEfficaciesByGeneration,
+};
 use crate::models::region::{Region, RegionId};
 use crate::models::shape::{Shape, ShapeId};
 use crate::models::species::{SpeciesId, UnlinkedSpecies};
@@ -52,6 +57,9 @@ pub struct UnlinkedPokeData {
     pub locations: HashMap<LocationId, UnlinkedLocation>,
     pub location_areas: HashMap<LocationAreaId, UnlinkedLocationArea>,
     pub pokemon: HashMap<PokemonId, UnlinkedPokemon>,
+    pub pokemon_types: HashMap<PokemonTypeId, UnlinkedPokemonType>,
+    pub pokemon_type_efficacies: PokemonTypeEfficacies,
+    pub pokemon_type_efficacies_past: PokemonTypeEfficaciesByGeneration,
     pub regions: HashMap<RegionId, Region>,
     pub shapes: HashMap<ShapeId, Shape>,
     pub species: HashMap<SpeciesId, UnlinkedSpecies>,
@@ -102,6 +110,8 @@ impl UnlinkedPokeData {
         data.versions = self.versions.link(&data);
 
         data.abilities = self.abilities.link(&data);
+        data.pokemon_types = self.pokemon_types.link(&data);
+        data.pokemon_type_efficacies = PokemonTypeEfficaciesCollection::build_from_unlinked(self);
         data.species = self.species.link(&data);
 
         data.pokemon = self.pokemon.link(&data);

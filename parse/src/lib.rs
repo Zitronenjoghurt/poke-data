@@ -50,6 +50,11 @@ use crate::models::poke_api::pokemon_habitats::HabitatData;
 use crate::models::poke_api::pokemon_shape_prose::ShapeProseData;
 use crate::models::poke_api::pokemon_shapes::ShapeData;
 use crate::models::poke_api::pokemon_species::PokemonSpeciesData;
+use crate::models::poke_api::pokemon_type_efficacy::PokemonTypeEfficacyData;
+use crate::models::poke_api::pokemon_type_efficacy_past::PokemonTypeEfficacyPastData;
+use crate::models::poke_api::pokemon_type_game_indices::PokemonTypeGameIndexData;
+use crate::models::poke_api::pokemon_type_names::PokemonTypeNameData;
+use crate::models::poke_api::pokemon_types::PokemonTypeData;
 use crate::models::poke_api::region::RegionData;
 use crate::models::poke_api::region_names::RegionNameData;
 use crate::models::poke_api::version_group_pokemon_move_methods::VersionGroupMoveMethodData;
@@ -80,6 +85,7 @@ use poke_data::models::item_pocket::ItemPocketId;
 use poke_data::models::location::LocationId;
 use poke_data::models::location_area::LocationAreaId;
 use poke_data::models::pokemon::PokemonId;
+use poke_data::models::pokemon_type::PokemonTypeId;
 use poke_data::models::region::RegionId;
 use poke_data::models::shape::ShapeId;
 use poke_data::models::species::SpeciesId;
@@ -142,6 +148,11 @@ pub struct RawData {
     pub location_area_encounter_rates: HashMap<LocationAreaId, Vec<LocationAreaEncounterRateData>>,
     pub location_area_prose: HashMap<LocationAreaId, Vec<LocationAreaProseData>>,
     pub pokemon: HashMap<PokemonId, PokemonData>,
+    pub pokemon_types: HashMap<PokemonTypeId, PokemonTypeData>,
+    pub pokemon_type_names: HashMap<PokemonTypeId, Vec<PokemonTypeNameData>>,
+    pub pokemon_type_game_indices: HashMap<PokemonTypeId, Vec<PokemonTypeGameIndexData>>,
+    pub pokemon_type_efficacies: Vec<PokemonTypeEfficacyData>,
+    pub pokemon_type_efficacies_past: Vec<PokemonTypeEfficacyPastData>,
     pub pokemon_abilities: HashMap<PokemonId, Vec<PokemonAbilityData>>,
     pub regions: HashMap<RegionId, RegionData>,
     pub region_names: HashMap<RegionId, Vec<RegionNameData>>,
@@ -257,6 +268,15 @@ impl RawData {
             pokemon_abilities: PokemonAbilityData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
+            pokemon_types: PokemonTypeData::load(base_path).await?.into_id_map(),
+            pokemon_type_names: PokemonTypeNameData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            pokemon_type_game_indices: PokemonTypeGameIndexData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            pokemon_type_efficacies: PokemonTypeEfficacyData::load(base_path).await?,
+            pokemon_type_efficacies_past: PokemonTypeEfficacyPastData::load(base_path).await?,
             regions: RegionData::load(base_path).await?.into_id_map(),
             region_names: RegionNameData::load(base_path).await?.into_id_map_grouped(),
             shapes: ShapeData::load(base_path).await?.into_id_map(),
@@ -297,6 +317,12 @@ impl RawData {
             locations: self.locations.clone().into_model(self),
             location_areas: self.location_areas.clone().into_model(self),
             pokemon: self.pokemon.clone().into_model(self),
+            pokemon_types: self.pokemon_types.clone().into_model(self),
+            pokemon_type_efficacies: self.pokemon_type_efficacies.clone().into_model(self),
+            pokemon_type_efficacies_past: self
+                .pokemon_type_efficacies_past
+                .clone()
+                .into_model(self),
             regions: self.regions.clone().into_model(self),
             shapes: self.shapes.clone().into_model(self),
             species: self.species.clone().into_model(self),

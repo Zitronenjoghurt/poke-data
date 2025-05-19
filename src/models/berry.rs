@@ -17,6 +17,8 @@ pub struct Berry {
     pub growth_time: u8,
     pub soil_dryness: u8,
     pub smoothness: u8,
+    // ToDo: Natural Gift Power
+    // ToDo: Natural Gift Type
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

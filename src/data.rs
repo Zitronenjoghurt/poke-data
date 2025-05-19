@@ -1,3 +1,4 @@
+use crate::collections::pokemon_type_efficacies::PokemonTypeEfficaciesCollection;
 use crate::models::ability::{Ability, AbilityId};
 use crate::models::berry::{Berry, BerryId};
 use crate::models::berry_firmness::{BerryFirmness, BerryFirmnessId};
@@ -17,6 +18,7 @@ use crate::models::item_pocket::{ItemPocket, ItemPocketId};
 use crate::models::location::{Location, LocationId};
 use crate::models::location_area::{LocationArea, LocationAreaId};
 use crate::models::pokemon::{Pokemon, PokemonId};
+use crate::models::pokemon_type::{PokemonType, PokemonTypeId};
 use crate::models::region::{Region, RegionId};
 use crate::models::shape::{Shape, ShapeId};
 use crate::models::species::{Species, SpeciesId};
@@ -51,6 +53,8 @@ pub struct PokeData {
     pub locations: HashMap<LocationId, Arc<Location>>,
     pub location_areas: HashMap<LocationAreaId, Arc<LocationArea>>,
     pub pokemon: HashMap<PokemonId, Arc<Pokemon>>,
+    pub pokemon_types: HashMap<PokemonTypeId, Arc<PokemonType>>,
+    pub pokemon_type_efficacies: PokemonTypeEfficaciesCollection,
     pub regions: HashMap<RegionId, Arc<Region>>,
     pub shapes: HashMap<ShapeId, Arc<Shape>>,
     pub species: HashMap<SpeciesId, Arc<Species>>,

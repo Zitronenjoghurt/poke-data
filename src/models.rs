@@ -23,6 +23,8 @@ pub mod location;
 pub mod location_area;
 pub mod move_method;
 pub mod pokemon;
+pub mod pokemon_type;
+pub mod pokemon_type_efficacies;
 pub mod region;
 pub mod shape;
 pub mod species;
