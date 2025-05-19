@@ -5,6 +5,11 @@ use crate::models::berry_firmness::{BerryFirmness, BerryFirmnessId};
 use crate::models::color::{Color, ColorId};
 use crate::models::damage_class::{DamageClass, DamageClassId};
 use crate::models::egg_group::{EggGroup, EggGroupId};
+use crate::models::encounter::{Encounter, EncounterId};
+use crate::models::encounter_condition::{EncounterCondition, EncounterConditionId};
+use crate::models::encounter_condition_value::{
+    EncounterConditionValue, EncounterConditionValueId,
+};
 use crate::models::encounter_method::{EncounterMethod, EncounterMethodId};
 use crate::models::evolution_trigger::{EvolutionTrigger, EvolutionTriggerId};
 use crate::models::generation::{Generation, GenerationId};
@@ -39,6 +44,10 @@ pub struct PokeData {
     pub berry_firmnesses: HashMap<BerryFirmnessId, Arc<BerryFirmness>>,
     pub colors: HashMap<ColorId, Arc<Color>>,
     pub damage_classes: HashMap<DamageClassId, Arc<DamageClass>>,
+    pub encounters: HashMap<EncounterId, Arc<Encounter>>,
+    pub encounter_conditions: HashMap<EncounterConditionId, Arc<EncounterCondition>>,
+    pub encounter_condition_values:
+        HashMap<EncounterConditionValueId, Arc<EncounterConditionValue>>,
     pub encounter_methods: HashMap<EncounterMethodId, Arc<EncounterMethod>>,
     pub egg_groups: HashMap<EggGroupId, Arc<EggGroup>>,
     pub evolution_triggers: HashMap<EvolutionTriggerId, Arc<EvolutionTrigger>>,

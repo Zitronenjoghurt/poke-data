@@ -100,6 +100,14 @@ fn test_item() {
 }
 
 #[test]
+fn test_pokemon() {
+    let data = load_data();
+    let mareep = data.pokemon.get(&179).unwrap();
+    assert_eq!(mareep.identifier, "mareep");
+    println!("{:#?}", mareep);
+}
+
+#[test]
 fn test_species() {
     let data = load_data();
     let snorlax = data.species.get(&143).unwrap();

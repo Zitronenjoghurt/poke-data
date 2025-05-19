@@ -7,6 +7,11 @@ use crate::models::berry_firmness::{BerryFirmness, BerryFirmnessId};
 use crate::models::color::{Color, ColorId};
 use crate::models::damage_class::{DamageClass, DamageClassId};
 use crate::models::egg_group::{EggGroup, EggGroupId};
+use crate::models::encounter::{EncounterId, UnlinkedEncounter};
+use crate::models::encounter_condition::{EncounterCondition, EncounterConditionId};
+use crate::models::encounter_condition_value::{
+    EncounterConditionValueId, UnlinkedEncounterConditionValue,
+};
 use crate::models::encounter_method::{EncounterMethod, EncounterMethodId};
 use crate::models::evolution_trigger::{EvolutionTrigger, EvolutionTriggerId};
 use crate::models::generation::{GenerationId, UnlinkedGeneration};
@@ -43,6 +48,10 @@ pub struct UnlinkedPokeData {
     pub berry_firmnesses: HashMap<BerryFirmnessId, BerryFirmness>,
     pub colors: HashMap<ColorId, Color>,
     pub damage_classes: HashMap<DamageClassId, DamageClass>,
+    pub encounters: HashMap<EncounterId, UnlinkedEncounter>,
+    pub encounter_conditions: HashMap<EncounterConditionId, EncounterCondition>,
+    pub encounter_condition_values:
+        HashMap<EncounterConditionValueId, UnlinkedEncounterConditionValue>,
     pub encounter_methods: HashMap<EncounterMethodId, EncounterMethod>,
     pub egg_groups: HashMap<EggGroupId, EggGroup>,
     pub evolution_triggers: HashMap<EvolutionTriggerId, EvolutionTrigger>,
@@ -85,6 +94,7 @@ impl UnlinkedPokeData {
         data.berry_firmnesses = self.berry_firmnesses.clone().into_arc_map();
         data.colors = self.colors.clone().into_arc_map();
         data.damage_classes = self.damage_classes.clone().into_arc_map();
+        data.encounter_conditions = self.encounter_conditions.clone().into_arc_map();
         data.encounter_methods = self.encounter_methods.clone().into_arc_map();
         data.egg_groups = self.egg_groups.clone().into_arc_map();
         data.evolution_triggers = self.evolution_triggers.clone().into_arc_map();
@@ -95,9 +105,7 @@ impl UnlinkedPokeData {
         data.item_pockets = self.item_pockets.clone().into_arc_map();
         data.regions = self.regions.clone().into_arc_map();
         data.shapes = self.shapes.clone().into_arc_map();
-
-        data.locations = self.locations.link(&data);
-        data.location_areas = self.location_areas.link(&data);
+        data.pokemon_type_efficacies = PokemonTypeEfficaciesCollection::build_from_unlinked(self);
 
         data.item_categories = self.item_categories.link(&data);
         data.items = self.items.link(&data);
@@ -109,13 +117,19 @@ impl UnlinkedPokeData {
         data.version_groups = self.version_groups.link(&data);
         data.versions = self.versions.link(&data);
 
+        data.encounter_condition_values = self.encounter_condition_values.link(&data);
+
+        data.encounters = self.encounters.link(&data);
+
+        data.locations = self.locations.link(&data);
+        data.location_areas = self.location_areas.link(&data);
+
         data.abilities = self.abilities.link(&data);
         data.pokemon_types = self.pokemon_types.link(&data);
-        data.pokemon_type_efficacies = PokemonTypeEfficaciesCollection::build_from_unlinked(self);
+
         data.species = self.species.link(&data);
 
         data.pokemon = self.pokemon.link(&data);
-
         data
     }
 }

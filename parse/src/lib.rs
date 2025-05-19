@@ -9,8 +9,17 @@ use crate::models::poke_api::berry_firmness::BerryFirmnessData;
 use crate::models::poke_api::berry_firmness_names::BerryFirmnessNameData;
 use crate::models::poke_api::egg_group::EggGroupData;
 use crate::models::poke_api::egg_group_prose::EggGroupProseData;
+use crate::models::poke_api::encounter::EncounterData;
+use crate::models::poke_api::encounter_condition_prose::EncounterConditionProseData;
+use crate::models::poke_api::encounter_condition_value_map::{
+    EncounterConditionValueMapData, EncounterSlotId,
+};
+use crate::models::poke_api::encounter_condition_value_prose::EncounterConditionValueProseData;
+use crate::models::poke_api::encounter_condition_values::EncounterConditionValueData;
+use crate::models::poke_api::encounter_conditions::EncounterConditionData;
 use crate::models::poke_api::encounter_method_prose::EncounterMethodProseData;
 use crate::models::poke_api::encounter_methods::EncounterMethodData;
+use crate::models::poke_api::encounter_slots::EncounterSlotData;
 use crate::models::poke_api::evolution_chains::{EvolutionChainData, EvolutionChainId};
 use crate::models::poke_api::evolution_trigger_prose::EvolutionTriggerProseData;
 use crate::models::poke_api::evolution_triggers::EvolutionTriggerData;
@@ -72,6 +81,9 @@ use poke_data::models::berry_firmness::BerryFirmnessId;
 use poke_data::models::color::ColorId;
 use poke_data::models::damage_class::DamageClassId;
 use poke_data::models::egg_group::EggGroupId;
+use poke_data::models::encounter::EncounterId;
+use poke_data::models::encounter_condition::EncounterConditionId;
+use poke_data::models::encounter_condition_value::EncounterConditionValueId;
 use poke_data::models::encounter_method::EncounterMethodId;
 use poke_data::models::evolution_trigger::EvolutionTriggerId;
 use poke_data::models::generation::GenerationId;
@@ -113,8 +125,16 @@ pub struct RawData {
     pub color_names: HashMap<ColorId, Vec<ColorNameData>>,
     pub damage_classes: HashMap<DamageClassId, DamageClassData>,
     pub damage_class_prose: HashMap<DamageClassId, Vec<DamageClassProseData>>,
+    pub encounters: HashMap<EncounterId, EncounterData>,
+    pub encounter_conditions: HashMap<EncounterConditionId, EncounterConditionData>,
+    pub encounter_condition_prose: HashMap<EncounterConditionId, Vec<EncounterConditionProseData>>,
+    pub encounter_condition_values: HashMap<EncounterConditionValueId, EncounterConditionValueData>,
+    pub encounter_condition_value_prose:
+        HashMap<EncounterConditionValueId, Vec<EncounterConditionValueProseData>>,
+    pub encounter_condition_value_map: HashMap<EncounterId, Vec<EncounterConditionValueMapData>>,
     pub encounter_methods: HashMap<EncounterMethodId, EncounterMethodData>,
     pub encounter_method_prose: HashMap<EncounterMethodId, Vec<EncounterMethodProseData>>,
+    pub encounter_slots: HashMap<EncounterSlotId, EncounterSlotData>,
     pub egg_groups: HashMap<EggGroupId, EggGroupData>,
     pub egg_group_prose: HashMap<EggGroupId, Vec<EggGroupProseData>>,
     pub evolution_chains: HashMap<EvolutionChainId, EvolutionChainData>,
@@ -196,10 +216,25 @@ impl RawData {
             damage_class_prose: DamageClassProseData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
+            encounters: EncounterData::load(base_path).await?.into_id_map(),
+            encounter_conditions: EncounterConditionData::load(base_path).await?.into_id_map(),
+            encounter_condition_prose: EncounterConditionProseData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            encounter_condition_values: EncounterConditionValueData::load(base_path)
+                .await?
+                .into_id_map(),
+            encounter_condition_value_prose: EncounterConditionValueProseData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            encounter_condition_value_map: EncounterConditionValueMapData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             encounter_methods: EncounterMethodData::load(base_path).await?.into_id_map(),
             encounter_method_prose: EncounterMethodProseData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
+            encounter_slots: EncounterSlotData::load(base_path).await?.into_id_map(),
             egg_groups: EggGroupData::load(base_path).await?.into_id_map(),
             egg_group_prose: EggGroupProseData::load(base_path)
                 .await?
@@ -303,6 +338,9 @@ impl RawData {
             berry_firmnesses: self.berry_firmnesses.clone().into_model(self),
             colors: self.colors.clone().into_model(self),
             damage_classes: self.damage_classes.clone().into_model(self),
+            encounters: self.encounters.clone().into_model(self),
+            encounter_conditions: self.encounter_conditions.clone().into_model(self),
+            encounter_condition_values: self.encounter_condition_values.clone().into_model(self),
             encounter_methods: self.encounter_methods.clone().into_model(self),
             egg_groups: self.egg_groups.clone().into_model(self),
             evolution_triggers: self.evolution_triggers.clone().into_model(self),
