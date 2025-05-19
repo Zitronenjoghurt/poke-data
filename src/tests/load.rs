@@ -3,7 +3,7 @@ use crate::types::language::Language;
 use std::path::PathBuf;
 
 fn load_data() -> PokeData {
-    let data_path = PathBuf::from("./output.bin");
+    let data_path = PathBuf::from("./data.bin");
     PokeData::load_path(&data_path).unwrap()
 }
 

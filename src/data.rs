@@ -27,9 +27,10 @@ use std::path::Path;
 use std::sync::Arc;
 use unlinked::UnlinkedPokeData;
 
+pub mod linkable;
 pub mod unlinked;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct PokeData {
     pub abilities: HashMap<AbilityId, Arc<Ability>>,
     pub berries: HashMap<BerryId, Arc<Berry>>,

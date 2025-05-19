@@ -1,3 +1,5 @@
+use crate::data::linkable::Linkable;
+use crate::data::PokeData;
 use crate::models::generation::GenerationId;
 use crate::models::language::LanguageId;
 use crate::models::region::{Region, RegionId};
@@ -7,35 +9,6 @@ use std::collections::HashMap;
 use std::sync::Arc;
 
 pub type LocationId = u16;
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct UnlinkedLocation {
-    pub id: LocationId,
-    pub identifier: String,
-    pub region_id: Option<RegionId>,
-    pub names: LocalizedLocationNames,
-    pub game_indices: LocationGameIndices,
-}
-
-impl UnlinkedLocation {
-    pub fn link(&self, regions: &HashMap<RegionId, Arc<Region>>) -> Arc<Location> {
-        let location = Location {
-            id: self.id,
-            identifier: self.identifier.clone(),
-            region: self.region_id.map(|region_id| {
-                regions
-                    .get(&region_id)
-                    .unwrap_or_else(|| {
-                        panic!("No region '{}' found for location '{}'", region_id, self.id)
-                    })
-                    .clone()
-            }),
-            names: self.names.clone(),
-            game_indices: self.game_indices.clone(),
-        };
-        Arc::new(location)
-    }
-}
 
 #[derive(Debug)]
 pub struct Location {
@@ -82,4 +55,36 @@ impl LocalizedLocationNames {
 pub struct LocalizedLocationName {
     pub name: String,
     pub subtitle: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UnlinkedLocation {
+    pub id: LocationId,
+    pub identifier: String,
+    pub region_id: Option<RegionId>,
+    pub names: LocalizedLocationNames,
+    pub game_indices: LocationGameIndices,
+}
+
+impl Linkable for UnlinkedLocation {
+    type Linked = Arc<Location>;
+
+    fn link(&self, data: &PokeData) -> Self::Linked {
+        let region = self.region_id.map(|region_id| {
+            data.regions
+                .get(&region_id)
+                .unwrap_or_else(|| {
+                    panic!("No region '{}' found for location '{}'", region_id, self.id)
+                })
+                .clone()
+        });
+        let location = Location {
+            id: self.id,
+            identifier: self.identifier.clone(),
+            region,
+            names: self.names.clone(),
+            game_indices: self.game_indices.clone(),
+        };
+        Arc::new(location)
+    }
 }

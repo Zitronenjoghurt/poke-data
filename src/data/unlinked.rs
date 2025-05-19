@@ -1,3 +1,4 @@
+use crate::data::linkable::Linkable;
 use crate::data::PokeData;
 use crate::models::ability::{AbilityId, UnlinkedAbility};
 use crate::models::berry::{BerryId, UnlinkedBerry};
@@ -72,128 +73,39 @@ impl UnlinkedPokeData {
     }
 
     pub fn initialize(&self) -> PokeData {
-        let berry_firmnesses = self.berry_firmnesses.clone().into_arc_map();
-        let colors = self.colors.clone().into_arc_map();
-        let damage_classes = self.damage_classes.clone().into_arc_map();
-        let encounter_methods = self.encounter_methods.clone().into_arc_map();
-        let egg_groups = self.egg_groups.clone().into_arc_map();
-        let evolution_triggers = self.evolution_triggers.clone().into_arc_map();
-        let growth_rates = self.growth_rates.clone().into_arc_map();
-        let habitats = self.habitats.clone().into_arc_map();
-        let item_flags = self.item_flags.clone().into_arc_map();
-        let item_fling_effects = self.item_fling_effects.clone().into_arc_map();
-        let item_pockets = self.item_pockets.clone().into_arc_map();
-        let regions = self.regions.clone().into_arc_map();
-        let shapes = self.shapes.clone().into_arc_map();
+        let mut data = PokeData::default();
+        data.berry_firmnesses = self.berry_firmnesses.clone().into_arc_map();
+        data.colors = self.colors.clone().into_arc_map();
+        data.damage_classes = self.damage_classes.clone().into_arc_map();
+        data.encounter_methods = self.encounter_methods.clone().into_arc_map();
+        data.egg_groups = self.egg_groups.clone().into_arc_map();
+        data.evolution_triggers = self.evolution_triggers.clone().into_arc_map();
+        data.growth_rates = self.growth_rates.clone().into_arc_map();
+        data.habitats = self.habitats.clone().into_arc_map();
+        data.item_flags = self.item_flags.clone().into_arc_map();
+        data.item_fling_effects = self.item_fling_effects.clone().into_arc_map();
+        data.item_pockets = self.item_pockets.clone().into_arc_map();
+        data.regions = self.regions.clone().into_arc_map();
+        data.shapes = self.shapes.clone().into_arc_map();
 
-        let locations = self
-            .locations
-            .iter()
-            .map(|(id, location)| (*id, location.link(&regions)))
-            .collect();
+        data.locations = self.locations.link(&data);
+        data.location_areas = self.location_areas.link(&data);
 
-        let location_areas = self
-            .location_areas
-            .iter()
-            .map(|(id, location_area)| (*id, location_area.link(&locations)))
-            .collect();
+        data.item_categories = self.item_categories.link(&data);
+        data.items = self.items.link(&data);
 
-        let item_categories = self
-            .item_categories
-            .iter()
-            .map(|(id, category)| (*id, category.link(&item_pockets)))
-            .collect();
+        data.berries = self.berries.link(&data);
 
-        let items = self
-            .items
-            .iter()
-            .map(|(id, item)| {
-                (
-                    *id,
-                    item.link(&item_categories, &item_flags, &item_fling_effects),
-                )
-            })
-            .collect();
+        data.generations = self.generations.link(&data);
 
-        let berries = self
-            .berries
-            .iter()
-            .map(|(id, berry)| (*id, berry.link(&berry_firmnesses, &items)))
-            .collect();
+        data.version_groups = self.version_groups.link(&data);
+        data.versions = self.versions.link(&data);
 
-        let generations = self
-            .generations
-            .iter()
-            .map(|(id, generation)| (*id, generation.link(&regions)))
-            .collect();
+        data.abilities = self.abilities.link(&data);
+        data.species = self.species.link(&data);
 
-        let version_groups = self
-            .version_groups
-            .iter()
-            .map(|(id, version_group)| (*id, version_group.link(&generations, &regions)))
-            .collect();
+        data.pokemon = self.pokemon.link(&data);
 
-        let versions = self
-            .versions
-            .iter()
-            .map(|(id, version)| (*id, version.link(&version_groups)))
-            .collect();
-
-        let abilities = self
-            .abilities
-            .iter()
-            .map(|(id, ability)| (*id, ability.link(&generations)))
-            .collect();
-
-        let species = self
-            .species
-            .iter()
-            .map(|(id, species)| {
-                (
-                    *id,
-                    species.link(
-                        &colors,
-                        &generations,
-                        &growth_rates,
-                        &habitats,
-                        &items,
-                        &shapes,
-                    ),
-                )
-            })
-            .collect();
-
-        let pokemon = self
-            .pokemon
-            .iter()
-            .map(|(id, pokemon)| (*id, pokemon.link(&abilities, &species)))
-            .collect();
-
-        PokeData {
-            abilities,
-            berries,
-            berry_firmnesses,
-            colors,
-            damage_classes,
-            encounter_methods,
-            egg_groups,
-            evolution_triggers,
-            generations,
-            growth_rates,
-            habitats,
-            items,
-            item_categories: Default::default(),
-            item_flags,
-            item_fling_effects,
-            item_pockets,
-            locations,
-            location_areas,
-            pokemon,
-            regions,
-            shapes,
-            species,
-            version_groups,
-            versions,
-        }
+        data
     }
 }

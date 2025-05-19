@@ -1,10 +1,23 @@
+use crate::data::linkable::Linkable;
+use crate::data::PokeData;
 use crate::models::berry_firmness::{BerryFirmness, BerryFirmnessId};
 use crate::models::item::{Item, ItemId};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use std::sync::Arc;
 
 pub type BerryId = u16;
+
+#[derive(Debug)]
+pub struct Berry {
+    pub id: BerryId,
+    pub item: Arc<Item>,
+    pub firmness: Arc<BerryFirmness>,
+    pub size: u16,
+    pub max_harvest: u8,
+    pub growth_time: u8,
+    pub soil_dryness: u8,
+    pub smoothness: u8,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UnlinkedBerry {
@@ -18,47 +31,38 @@ pub struct UnlinkedBerry {
     pub smoothness: u8,
 }
 
-impl UnlinkedBerry {
-    pub fn link(
-        &self,
-        firmnesses: &HashMap<BerryFirmnessId, Arc<BerryFirmness>>,
-        items: &HashMap<ItemId, Arc<Item>>,
-    ) -> Arc<Berry> {
+impl Linkable for UnlinkedBerry {
+    type Linked = Arc<Berry>;
+
+    fn link(&self, data: &PokeData) -> Self::Linked {
+        let item = data
+            .items
+            .get(&self.item_id)
+            .unwrap_or_else(|| panic!("No item '{}' found for berry '{}'", self.item_id, self.id))
+            .clone();
+
+        let firmness = data
+            .berry_firmnesses
+            .get(&self.firmness_id)
+            .unwrap_or_else(|| {
+                panic!(
+                    "No firmness '{}' found for berry '{}'",
+                    self.firmness_id, self.id
+                )
+            })
+            .clone();
+
         let berry = Berry {
             id: self.id,
-            item: items
-                .get(&self.item_id)
-                .unwrap_or_else(|| {
-                    panic!("No item '{}' found for berry '{}'", self.item_id, self.id)
-                })
-                .clone(),
-            firmness: firmnesses
-                .get(&self.firmness_id)
-                .unwrap_or_else(|| {
-                    panic!(
-                        "No firmness '{}' found for berry '{}'",
-                        self.firmness_id, self.id
-                    )
-                })
-                .clone(),
+            item,
+            firmness,
             size: self.size,
             max_harvest: self.max_harvest,
             growth_time: self.growth_time,
             soil_dryness: self.soil_dryness,
             smoothness: self.smoothness,
         };
+
         Arc::new(berry)
     }
-}
-
-#[derive(Debug)]
-pub struct Berry {
-    pub id: BerryId,
-    pub item: Arc<Item>,
-    pub firmness: Arc<BerryFirmness>,
-    pub size: u16,
-    pub max_harvest: u8,
-    pub growth_time: u8,
-    pub soil_dryness: u8,
-    pub smoothness: u8,
 }

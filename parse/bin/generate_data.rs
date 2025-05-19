@@ -11,7 +11,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let parsed_data = raw_data.parse();
     let encoded_data = bincode::serialize(&parsed_data)?;
 
-    let output_path = PathBuf::from("../output.bin");
+    let output_path = PathBuf::from("../data.bin");
     let mut compressor = ZlibEncoder::new(Vec::new(), Compression::best());
     compressor.write_all(&encoded_data)?;
     let compressed_data = compressor.finish()?;
