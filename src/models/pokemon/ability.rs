@@ -1,5 +1,5 @@
+use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
-use crate::data::PokeData;
 use crate::models::ability::{Ability, AbilityId};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
@@ -21,9 +21,9 @@ pub struct UnlinkedPokemonAbility {
 impl Linkable for UnlinkedPokemonAbility {
     type Linked = PokemonAbility;
 
-    fn link(&self, data: &PokeData) -> Self::Linked {
+    fn link(&self, context: &LinkContext) -> Self::Linked {
         PokemonAbility {
-            ability: data.abilities.get(&self.ability_id).unwrap().clone(),
+            ability: context.abilities.get(&self.ability_id).unwrap().clone(),
             is_hidden: self.is_hidden,
             slot: self.slot,
         }

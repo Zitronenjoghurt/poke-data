@@ -1,5 +1,5 @@
+use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
-use crate::data::PokeData;
 use crate::models::encounter_condition_value::{
     EncounterConditionValue, EncounterConditionValueId,
 };
@@ -46,8 +46,8 @@ pub struct UnlinkedEncounter {
 impl Linkable for UnlinkedEncounter {
     type Linked = Arc<Encounter>;
 
-    fn link(&self, data: &PokeData) -> Self::Linked {
-        let encounter_method = data
+    fn link(&self, context: &LinkContext) -> Self::Linked {
+        let encounter_method = context
             .encounter_methods
             .get(&self.encounter_method_id)
             .unwrap_or_else(|| {
@@ -58,7 +58,7 @@ impl Linkable for UnlinkedEncounter {
             })
             .clone();
 
-        let version = data
+        let version = context
             .versions
             .get(&self.version_id)
             .unwrap_or_else(|| {
@@ -69,7 +69,7 @@ impl Linkable for UnlinkedEncounter {
             })
             .clone();
 
-        let version_group = data
+        let version_group = context
             .version_groups
             .get(&self.version_group_id)
             .unwrap_or_else(|| {
@@ -84,7 +84,8 @@ impl Linkable for UnlinkedEncounter {
             .encounter_condition_value_ids
             .iter()
             .map(|id| {
-                data.encounter_condition_values
+                context
+                    .encounter_condition_values
                     .get(id)
                     .unwrap_or_else(|| {
                         panic!(

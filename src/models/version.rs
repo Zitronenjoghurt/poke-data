@@ -1,7 +1,9 @@
+use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
-use crate::data::PokeData;
 use crate::models::localized_names::LocalizedNames;
 use crate::models::version_group::{VersionGroup, VersionGroupId};
+use crate::traits::has_identifier::HasIdentifier;
+use crate::traits::has_localized_names::HasLocalizedNames;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
@@ -26,8 +28,8 @@ pub struct UnlinkedVersion {
 impl Linkable for UnlinkedVersion {
     type Linked = Arc<Version>;
 
-    fn link(&self, data: &PokeData) -> Self::Linked {
-        let version_group = data
+    fn link(&self, context: &LinkContext) -> Self::Linked {
+        let version_group = context
             .version_groups
             .get(&self.version_group_id)
             .unwrap_or_else(|| {
@@ -46,5 +48,17 @@ impl Linkable for UnlinkedVersion {
         };
 
         Arc::new(version)
+    }
+}
+
+impl HasLocalizedNames for Version {
+    fn localized_names(&self) -> &LocalizedNames {
+        &self.names
+    }
+}
+
+impl HasIdentifier for Version {
+    fn identifier(&self) -> &str {
+        &self.identifier
     }
 }

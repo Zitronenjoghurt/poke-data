@@ -1,11 +1,13 @@
+use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
-use crate::data::PokeData;
 use crate::models::flavor_texts::FlavorTexts;
 use crate::models::generation::{Generation, GenerationId};
 use crate::models::language::LanguageId;
 use crate::models::localized_effects::LocalizedEffects;
 use crate::models::localized_names::LocalizedNames;
 use crate::models::version_group::VersionGroupId;
+use crate::traits::has_identifier::HasIdentifier;
+use crate::traits::has_localized_names::HasLocalizedNames;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -54,8 +56,8 @@ pub struct UnlinkedAbility {
 impl Linkable for UnlinkedAbility {
     type Linked = Arc<Ability>;
 
-    fn link(&self, data: &PokeData) -> Self::Linked {
-        let generation = data
+    fn link(&self, context: &LinkContext) -> Self::Linked {
+        let generation = context
             .generations
             .get(&self.generation_id)
             .unwrap_or_else(|| {
@@ -78,5 +80,17 @@ impl Linkable for UnlinkedAbility {
         };
 
         Arc::new(ability)
+    }
+}
+
+impl HasIdentifier for Ability {
+    fn identifier(&self) -> &str {
+        &self.identifier
+    }
+}
+
+impl HasLocalizedNames for Ability {
+    fn localized_names(&self) -> &LocalizedNames {
+        &self.names
     }
 }

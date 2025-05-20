@@ -1,5 +1,5 @@
+use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
-use crate::data::PokeData;
 use crate::models::encounter_condition::{EncounterCondition, EncounterConditionId};
 use crate::models::localized_names::LocalizedNames;
 use serde::{Deserialize, Serialize};
@@ -28,8 +28,8 @@ pub struct UnlinkedEncounterConditionValue {
 impl Linkable for UnlinkedEncounterConditionValue {
     type Linked = Arc<EncounterConditionValue>;
 
-    fn link(&self, data: &PokeData) -> Self::Linked {
-        let encounter_condition = data
+    fn link(&self, context: &LinkContext) -> Self::Linked {
+        let encounter_condition = context
             .encounter_conditions
             .get(&self.encounter_condition_id)
             .unwrap_or_else(|| {

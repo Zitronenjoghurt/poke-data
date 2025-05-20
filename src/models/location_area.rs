@@ -1,10 +1,11 @@
+use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
-use crate::data::PokeData;
 use crate::models::encounter::Encounter;
 use crate::models::encounter_method::EncounterMethodId;
 use crate::models::localized_names::LocalizedNames;
 use crate::models::location::{Location, LocationId};
 use crate::models::version::VersionId;
+use crate::traits::has_localized_names::HasLocalizedNames;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -51,8 +52,8 @@ pub struct UnlinkedLocationArea {
 impl Linkable for UnlinkedLocationArea {
     type Linked = Arc<LocationArea>;
 
-    fn link(&self, data: &PokeData) -> Self::Linked {
-        let location = data
+    fn link(&self, context: &LinkContext) -> Self::Linked {
+        let location = context
             .locations
             .get(&self.location_id)
             .unwrap_or_else(|| {
@@ -63,7 +64,7 @@ impl Linkable for UnlinkedLocationArea {
             })
             .clone();
 
-        let relevant_encounters: Vec<Arc<Encounter>> = data
+        let relevant_encounters: Vec<Arc<Encounter>> = context
             .encounters
             .iter()
             .filter_map(|(_, encounter)| {
@@ -96,5 +97,11 @@ impl Linkable for UnlinkedLocationArea {
         };
 
         Arc::new(location_area)
+    }
+}
+
+impl HasLocalizedNames for LocationArea {
+    fn localized_names(&self) -> &LocalizedNames {
+        &self.names
     }
 }

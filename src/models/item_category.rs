@@ -1,7 +1,9 @@
+use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
-use crate::data::PokeData;
 use crate::models::item_pocket::{ItemPocket, ItemPocketId};
 use crate::models::localized_names::LocalizedNames;
+use crate::traits::has_identifier::HasIdentifier;
+use crate::traits::has_localized_names::HasLocalizedNames;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
@@ -26,8 +28,8 @@ pub struct UnlinkedItemCategory {
 impl Linkable for UnlinkedItemCategory {
     type Linked = Arc<ItemCategory>;
 
-    fn link(&self, data: &PokeData) -> Self::Linked {
-        let pocket = data
+    fn link(&self, context: &LinkContext) -> Self::Linked {
+        let pocket = context
             .item_pockets
             .get(&self.pocket_id)
             .unwrap_or_else(|| {
@@ -37,12 +39,26 @@ impl Linkable for UnlinkedItemCategory {
                 )
             })
             .clone();
+
         let category = ItemCategory {
             id: self.id,
             identifier: self.identifier.clone(),
             names: self.names.clone(),
             pocket,
         };
+
         Arc::new(category)
+    }
+}
+
+impl HasLocalizedNames for ItemCategory {
+    fn localized_names(&self) -> &LocalizedNames {
+        &self.names
+    }
+}
+
+impl HasIdentifier for ItemCategory {
+    fn identifier(&self) -> &str {
+        &self.identifier
     }
 }

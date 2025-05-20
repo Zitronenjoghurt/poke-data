@@ -1,7 +1,10 @@
+use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
-use crate::data::PokeData;
 use crate::models::berry_firmness::{BerryFirmness, BerryFirmnessId};
 use crate::models::item::{Item, ItemId};
+use crate::models::localized_names::LocalizedNames;
+use crate::traits::has_identifier::HasIdentifier;
+use crate::traits::has_localized_names::HasLocalizedNames;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
@@ -36,14 +39,14 @@ pub struct UnlinkedBerry {
 impl Linkable for UnlinkedBerry {
     type Linked = Arc<Berry>;
 
-    fn link(&self, data: &PokeData) -> Self::Linked {
-        let item = data
+    fn link(&self, context: &LinkContext) -> Self::Linked {
+        let item = context
             .items
             .get(&self.item_id)
             .unwrap_or_else(|| panic!("No item '{}' found for berry '{}'", self.item_id, self.id))
             .clone();
 
-        let firmness = data
+        let firmness = context
             .berry_firmnesses
             .get(&self.firmness_id)
             .unwrap_or_else(|| {
@@ -66,5 +69,17 @@ impl Linkable for UnlinkedBerry {
         };
 
         Arc::new(berry)
+    }
+}
+
+impl HasIdentifier for Berry {
+    fn identifier(&self) -> &str {
+        &self.item.identifier
+    }
+}
+
+impl HasLocalizedNames for Berry {
+    fn localized_names(&self) -> &LocalizedNames {
+        &self.item.names
     }
 }

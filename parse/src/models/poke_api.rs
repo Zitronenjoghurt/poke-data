@@ -62,6 +62,7 @@ pub mod pokemon_habitats;
 pub mod pokemon_shape_prose;
 pub mod pokemon_shapes;
 pub mod pokemon_species;
+pub mod pokemon_species_names;
 pub mod pokemon_type_efficacy;
 pub mod pokemon_type_efficacy_past;
 pub mod pokemon_type_game_indices;

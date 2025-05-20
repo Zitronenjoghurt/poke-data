@@ -1,5 +1,6 @@
 use crate::models::poke_api::evolution_chains::EvolutionChainId;
 use crate::models::poke_api::PokeApiModel;
+use crate::traits::get_model::GetModel;
 use crate::traits::has_id::HasId;
 use crate::traits::into_model::IntoModel;
 use crate::RawData;
@@ -65,6 +66,7 @@ impl IntoModel<UnlinkedSpecies> for PokemonSpeciesData {
         UnlinkedSpecies {
             id: self.id,
             identifier: self.identifier,
+            names: data.species_names.get_model(&self.id, data),
             generation_id: self.generation_id,
             evolves_from_species_id: self.evolves_from_species_id,
             baby_trigger_item_id: evolution_chain.baby_trigger_item_id,

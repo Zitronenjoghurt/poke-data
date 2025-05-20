@@ -1,10 +1,11 @@
+use crate::data_structures::entity_collection::HasNameSearchIndex;
 use crate::tests::load_data;
 use crate::types::language::Language;
 
 #[test]
 fn test_ability() {
     let data = load_data();
-    let stench = data.abilities.get(&1).unwrap();
+    let stench = data.abilities.find_by_name("strench", 0.5).unwrap();
     assert_eq!(stench.identifier, "stench");
     assert_eq!(stench.names.get_by_language(Language::English), "Stench");
     assert_eq!(stench.generation.identifier, "generation-iii");
@@ -14,7 +15,7 @@ fn test_ability() {
 #[test]
 fn test_berry() {
     let data = load_data();
-    let cheri = data.berries.get(&1).unwrap();
+    let cheri = data.berries.find_by_name("chery", 0.5).unwrap();
     assert_eq!(cheri.item.identifier, "cheri-berry");
     assert_eq!(
         cheri.firmness.names.get_by_language(Language::English),
@@ -28,51 +29,17 @@ fn test_berry() {
 }
 
 #[test]
-fn test_color() {
-    let data = load_data();
-    let green = data.colors.get(&5).unwrap();
-    assert_eq!(green.identifier, "green");
-    assert_eq!(green.names.get_by_language(Language::English), "Green");
-}
-
-#[test]
-fn test_damage_class() {
-    let data = load_data();
-    let physical = data.damage_classes.get(&2).unwrap();
-    assert_eq!(physical.identifier, "physical");
-    assert_eq!(
-        physical
-            .prose
-            .get_by_language(Language::English)
-            .unwrap()
-            .description,
-        "Physical damage, controlled by Attack and Defense"
-    );
-}
-
-#[test]
 fn test_egg_groups() {
     let data = load_data();
-    let dragon = data.egg_groups.get(&14).unwrap();
+    let dragon = data.egg_groups.find_by_name("dragpn", 0.5).unwrap();
     assert_eq!(dragon.identifier, "dragon");
     assert_eq!(dragon.names.get_by_language(Language::English), "Dragon");
 }
 
 #[test]
-fn test_encounter_method() {
-    let data = load_data();
-    let method = data.encounter_methods.get(&1).unwrap();
-    assert_eq!(method.identifier, "walk");
-    assert_eq!(
-        method.names.get_by_language(Language::English),
-        "Walking in tall grass or a cave"
-    );
-}
-
-#[test]
 fn test_item() {
     let data = load_data();
-    let toxic_orb = data.items.get(&249).unwrap();
+    let toxic_orb = data.items.find_by_name("Toxic orb", 0.5).unwrap();
     assert_eq!(toxic_orb.identifier, "toxic-orb");
     assert_eq!(
         toxic_orb.names.get_by_language(Language::English),
@@ -100,46 +67,9 @@ fn test_item() {
 }
 
 #[test]
-fn test_pokemon() {
-    let data = load_data();
-    let mareep = data.pokemon.get(&179).unwrap();
-    assert_eq!(mareep.identifier, "mareep");
-    println!("{:#?}", mareep);
-}
-
-#[test]
-fn test_species() {
-    let data = load_data();
-    let snorlax = data.species.get(&143).unwrap();
-    assert_eq!(snorlax.identifier, "snorlax");
-    assert_eq!(snorlax.generation.identifier, "generation-i");
-    assert_eq!(snorlax.growth_rate.identifier, "slow");
-}
-
-#[test]
-fn test_types() {
-    let data = load_data();
-    let electric = data.pokemon_types.get(&13).unwrap();
-    assert_eq!(electric.identifier, "electric");
-    assert_eq!(electric.generation.id, 1);
-    assert_eq!(electric.damage_class.clone().unwrap().identifier, "special");
-}
-
-#[test]
-fn test_version() {
-    let data = load_data();
-    let red = data.versions.get(&1).unwrap();
-    assert_eq!(red.identifier, "red");
-    assert_eq!(red.names.get_by_language(Language::German), "Rot");
-    assert_eq!(red.version_group.identifier, "red-blue");
-    assert_eq!(red.version_group.generation.identifier, "generation-i");
-    assert_eq!(red.version_group.regions[0].identifier, "kanto")
-}
-
-#[test]
 fn test_location() {
     let data = load_data();
-    let area = data.location_areas.get(&211).unwrap();
+    let area = data.location_areas.find_by_name("Ekruteak", 0.5).unwrap();
     assert_eq!(area.game_index, 28);
     assert_eq!(
         area.location
@@ -149,4 +79,31 @@ fn test_location() {
             .name,
         "Ecruteak City"
     );
+}
+
+#[test]
+fn test_pokemon() {
+    let data = load_data();
+    let mareep = data.pokemon.find_by_name("mareeep", 0.5).unwrap();
+    assert_eq!(mareep.identifier, "mareep");
+}
+
+#[test]
+fn test_species() {
+    let data = load_data();
+    let snorlax = data.species.find_by_name("snorlex", 0.5).unwrap();
+    assert_eq!(snorlax.identifier, "snorlax");
+    assert_eq!(snorlax.generation.identifier, "generation-i");
+    assert_eq!(snorlax.growth_rate.identifier, "slow");
+}
+
+#[test]
+fn test_version() {
+    let data = load_data();
+    let red = data.versions.find_by_name("redd", 0.5).unwrap();
+    assert_eq!(red.identifier, "red");
+    assert_eq!(red.names.get_by_language(Language::German), "Rot");
+    assert_eq!(red.version_group.identifier, "red-blue");
+    assert_eq!(red.version_group.generation.identifier, "generation-i");
+    assert_eq!(red.version_group.regions[0].identifier, "kanto")
 }

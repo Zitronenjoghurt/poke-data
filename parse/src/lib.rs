@@ -59,6 +59,7 @@ use crate::models::poke_api::pokemon_habitats::HabitatData;
 use crate::models::poke_api::pokemon_shape_prose::ShapeProseData;
 use crate::models::poke_api::pokemon_shapes::ShapeData;
 use crate::models::poke_api::pokemon_species::PokemonSpeciesData;
+use crate::models::poke_api::pokemon_species_names::PokemonSpeciesNameData;
 use crate::models::poke_api::pokemon_type_efficacy::PokemonTypeEfficacyData;
 use crate::models::poke_api::pokemon_type_efficacy_past::PokemonTypeEfficacyPastData;
 use crate::models::poke_api::pokemon_type_game_indices::PokemonTypeGameIndexData;
@@ -179,6 +180,7 @@ pub struct RawData {
     pub shapes: HashMap<ShapeId, ShapeData>,
     pub shape_prose: HashMap<ShapeId, Vec<ShapeProseData>>,
     pub species: HashMap<SpeciesId, PokemonSpeciesData>,
+    pub species_names: HashMap<SpeciesId, Vec<PokemonSpeciesNameData>>,
     pub version_groups: HashMap<VersionGroupId, VersionGroupData>,
     pub version_group_move_methods: HashMap<VersionGroupId, Vec<VersionGroupMoveMethodData>>,
     pub version_group_regions: HashMap<VersionGroupId, Vec<VersionGroupRegionData>>,
@@ -317,6 +319,9 @@ impl RawData {
             shapes: ShapeData::load(base_path).await?.into_id_map(),
             shape_prose: ShapeProseData::load(base_path).await?.into_id_map_grouped(),
             species: PokemonSpeciesData::load(base_path).await?.into_id_map(),
+            species_names: PokemonSpeciesNameData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             version_groups: VersionGroupData::load(base_path).await?.into_id_map(),
             version_group_move_methods: VersionGroupMoveMethodData::load(base_path)
                 .await?

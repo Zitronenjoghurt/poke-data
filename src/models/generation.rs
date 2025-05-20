@@ -1,7 +1,9 @@
+use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
-use crate::data::PokeData;
 use crate::models::localized_names::LocalizedNames;
 use crate::models::region::{Region, RegionId};
+use crate::traits::has_identifier::HasIdentifier;
+use crate::traits::has_localized_names::HasLocalizedNames;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
@@ -26,8 +28,8 @@ pub struct UnlinkedGeneration {
 impl Linkable for UnlinkedGeneration {
     type Linked = Arc<Generation>;
 
-    fn link(&self, data: &PokeData) -> Self::Linked {
-        let main_region = data
+    fn link(&self, context: &LinkContext) -> Self::Linked {
+        let main_region = context
             .regions
             .get(&self.main_region_id)
             .unwrap_or_else(|| {
@@ -46,5 +48,17 @@ impl Linkable for UnlinkedGeneration {
         };
 
         Arc::new(generation)
+    }
+}
+
+impl HasLocalizedNames for Generation {
+    fn localized_names(&self) -> &LocalizedNames {
+        &self.names
+    }
+}
+
+impl HasIdentifier for Generation {
+    fn identifier(&self) -> &str {
+        &self.identifier
     }
 }

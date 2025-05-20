@@ -11,6 +11,10 @@ impl LocalizedNames {
         Self(localizations)
     }
 
+    pub fn localizations(&self) -> &HashMap<LanguageId, String> {
+        &self.0
+    }
+
     pub fn get_by_language(&self, language: Language) -> &str {
         let language_id = language as LanguageId;
         if let Some(target) = self.0.get(&language_id) {

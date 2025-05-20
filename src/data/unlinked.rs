@@ -1,4 +1,5 @@
 use crate::collections::pokemon_type_efficacies::PokemonTypeEfficaciesCollection;
+use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
 use crate::data::PokeData;
 use crate::models::ability::{AbilityId, UnlinkedAbility};
@@ -90,46 +91,48 @@ impl UnlinkedPokeData {
     }
 
     pub fn initialize(&self) -> PokeData {
-        let mut data = PokeData::default();
-        data.berry_firmnesses = self.berry_firmnesses.clone().into_arc_map();
-        data.colors = self.colors.clone().into_arc_map();
-        data.damage_classes = self.damage_classes.clone().into_arc_map();
-        data.encounter_conditions = self.encounter_conditions.clone().into_arc_map();
-        data.encounter_methods = self.encounter_methods.clone().into_arc_map();
-        data.egg_groups = self.egg_groups.clone().into_arc_map();
-        data.evolution_triggers = self.evolution_triggers.clone().into_arc_map();
-        data.growth_rates = self.growth_rates.clone().into_arc_map();
-        data.habitats = self.habitats.clone().into_arc_map();
-        data.item_flags = self.item_flags.clone().into_arc_map();
-        data.item_fling_effects = self.item_fling_effects.clone().into_arc_map();
-        data.item_pockets = self.item_pockets.clone().into_arc_map();
-        data.regions = self.regions.clone().into_arc_map();
-        data.shapes = self.shapes.clone().into_arc_map();
-        data.pokemon_type_efficacies = PokemonTypeEfficaciesCollection::build_from_unlinked(self);
+        let mut context = LinkContext::default();
+        context.berry_firmnesses = self.berry_firmnesses.clone().into_arc_map();
+        context.colors = self.colors.clone().into_arc_map();
+        context.damage_classes = self.damage_classes.clone().into_arc_map();
+        context.encounter_conditions = self.encounter_conditions.clone().into_arc_map();
+        context.encounter_methods = self.encounter_methods.clone().into_arc_map();
+        context.egg_groups = self.egg_groups.clone().into_arc_map();
+        context.evolution_triggers = self.evolution_triggers.clone().into_arc_map();
+        context.growth_rates = self.growth_rates.clone().into_arc_map();
+        context.habitats = self.habitats.clone().into_arc_map();
+        context.item_flags = self.item_flags.clone().into_arc_map();
+        context.item_fling_effects = self.item_fling_effects.clone().into_arc_map();
+        context.item_pockets = self.item_pockets.clone().into_arc_map();
+        context.regions = self.regions.clone().into_arc_map();
+        context.shapes = self.shapes.clone().into_arc_map();
+        context.pokemon_type_efficacies =
+            PokemonTypeEfficaciesCollection::build_from_unlinked(self);
 
-        data.item_categories = self.item_categories.link(&data);
-        data.items = self.items.link(&data);
+        context.item_categories = self.item_categories.link(&context);
+        context.items = self.items.link(&context);
 
-        data.berries = self.berries.link(&data);
+        context.berries = self.berries.link(&context);
 
-        data.generations = self.generations.link(&data);
+        context.generations = self.generations.link(&context);
 
-        data.version_groups = self.version_groups.link(&data);
-        data.versions = self.versions.link(&data);
+        context.version_groups = self.version_groups.link(&context);
+        context.versions = self.versions.link(&context);
 
-        data.encounter_condition_values = self.encounter_condition_values.link(&data);
+        context.encounter_condition_values = self.encounter_condition_values.link(&context);
 
-        data.encounters = self.encounters.link(&data);
+        context.encounters = self.encounters.link(&context);
 
-        data.locations = self.locations.link(&data);
-        data.location_areas = self.location_areas.link(&data);
+        context.locations = self.locations.link(&context);
+        context.location_areas = self.location_areas.link(&context);
 
-        data.abilities = self.abilities.link(&data);
-        data.pokemon_types = self.pokemon_types.link(&data);
+        context.abilities = self.abilities.link(&context);
+        context.pokemon_types = self.pokemon_types.link(&context);
 
-        data.species = self.species.link(&data);
+        context.species = self.species.link(&context);
 
-        data.pokemon = self.pokemon.link(&data);
-        data
+        context.pokemon = self.pokemon.link(&context);
+
+        context.build_data()
     }
 }

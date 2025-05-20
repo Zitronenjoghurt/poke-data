@@ -1,9 +1,11 @@
+use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
-use crate::data::PokeData;
 use crate::models::encounter::Encounter;
 use crate::models::pokemon::ability::{PokemonAbility, UnlinkedPokemonAbility};
 use crate::models::species::{Species, SpeciesId};
 use crate::models::version::VersionId;
+use crate::traits::has_identifier::HasIdentifier;
+use crate::traits::has_localized_names::HasLocalizedNames;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -42,8 +44,8 @@ pub struct UnlinkedPokemon {
 impl Linkable for UnlinkedPokemon {
     type Linked = Arc<Pokemon>;
 
-    fn link(&self, data: &PokeData) -> Self::Linked {
-        let species = data
+    fn link(&self, context: &LinkContext) -> Self::Linked {
+        let species = context
             .species
             .get(&self.species_id)
             .unwrap_or_else(|| {
@@ -54,9 +56,9 @@ impl Linkable for UnlinkedPokemon {
             })
             .clone();
 
-        let abilities = self.abilities.link(data);
+        let abilities = self.abilities.link(context);
 
-        let relevant_encounters: Vec<Arc<Encounter>> = data
+        let relevant_encounters: Vec<Arc<Encounter>> = context
             .encounters
             .iter()
             .filter_map(|(_, encounter)| {
@@ -92,5 +94,11 @@ impl Linkable for UnlinkedPokemon {
         };
 
         Arc::new(pokemon)
+    }
+}
+
+impl HasIdentifier for Pokemon {
+    fn identifier(&self) -> &str {
+        &self.identifier
     }
 }

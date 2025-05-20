@@ -1,5 +1,5 @@
+use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
-use crate::data::PokeData;
 use crate::models::flavor_texts::FlavorTexts;
 use crate::models::generation::GenerationId;
 use crate::models::item_category::{ItemCategory, ItemCategoryId};
@@ -7,6 +7,8 @@ use crate::models::item_flag::{ItemFlag, ItemFlagId};
 use crate::models::item_fling_effect::{ItemFlingEffect, ItemFlingEffectId};
 use crate::models::localized_effects::LocalizedEffects;
 use crate::models::localized_names::LocalizedNames;
+use crate::traits::has_identifier::HasIdentifier;
+use crate::traits::has_localized_names::HasLocalizedNames;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -55,8 +57,8 @@ pub struct UnlinkedItem {
 impl Linkable for UnlinkedItem {
     type Linked = Arc<Item>;
 
-    fn link(&self, data: &PokeData) -> Self::Linked {
-        let category = data
+    fn link(&self, context: &LinkContext) -> Self::Linked {
+        let category = context
             .item_categories
             .get(&self.category_id)
             .unwrap_or_else(|| {
@@ -68,7 +70,8 @@ impl Linkable for UnlinkedItem {
             .clone();
 
         let fling_effect = self.fling_effect_id.map(|effect_id| {
-            data.item_fling_effects
+            context
+                .item_fling_effects
                 .get(&effect_id)
                 .unwrap_or_else(|| {
                     panic!(
@@ -83,7 +86,8 @@ impl Linkable for UnlinkedItem {
             .flag_ids
             .iter()
             .map(|flag_id| {
-                data.item_flags
+                context
+                    .item_flags
                     .get(flag_id)
                     .unwrap_or_else(|| {
                         panic!("No item flag '{}' found for item '{}'", flag_id, self.id)
@@ -107,5 +111,17 @@ impl Linkable for UnlinkedItem {
         };
 
         Arc::new(item)
+    }
+}
+
+impl HasLocalizedNames for Item {
+    fn localized_names(&self) -> &LocalizedNames {
+        &self.names
+    }
+}
+
+impl HasIdentifier for Item {
+    fn identifier(&self) -> &str {
+        &self.identifier
     }
 }

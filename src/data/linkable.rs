@@ -1,10 +1,10 @@
-use crate::data::PokeData;
+use crate::data::link_context::LinkContext;
 use std::collections::HashMap;
 use std::hash::Hash;
 
 pub trait Linkable {
     type Linked;
-    fn link(&self, data: &PokeData) -> Self::Linked;
+    fn link(&self, context: &LinkContext) -> Self::Linked;
 }
 
 impl<K, V> Linkable for HashMap<K, V>
@@ -14,9 +14,9 @@ where
 {
     type Linked = HashMap<K, V::Linked>;
 
-    fn link(&self, data: &PokeData) -> Self::Linked {
+    fn link(&self, context: &LinkContext) -> Self::Linked {
         self.iter()
-            .map(|(id, item)| (*id, item.link(data)))
+            .map(|(id, item)| (*id, item.link(context)))
             .collect()
     }
 }
@@ -26,7 +26,7 @@ where
     V: Linkable,
 {
     type Linked = Vec<V::Linked>;
-    fn link(&self, data: &PokeData) -> Self::Linked {
-        self.iter().map(|item| item.link(data)).collect()
+    fn link(&self, context: &LinkContext) -> Self::Linked {
+        self.iter().map(|item| item.link(context)).collect()
     }
 }

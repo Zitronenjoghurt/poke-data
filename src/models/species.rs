@@ -1,11 +1,14 @@
+use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
-use crate::data::PokeData;
 use crate::models::color::{Color, ColorId};
 use crate::models::generation::{Generation, GenerationId};
 use crate::models::growth_rate::{GrowthRate, GrowthRateId};
 use crate::models::habitat::{Habitat, HabitatId};
 use crate::models::item::{Item, ItemId};
+use crate::models::localized_names::LocalizedNames;
 use crate::models::shape::{Shape, ShapeId};
+use crate::traits::has_identifier::HasIdentifier;
+use crate::traits::has_localized_names::HasLocalizedNames;
 use crate::types::capture_rate::CaptureRate;
 use crate::types::gender_rate::GenderRate;
 use serde::{Deserialize, Serialize};
@@ -17,6 +20,7 @@ pub type SpeciesId = u16;
 pub struct Species {
     pub id: SpeciesId,
     pub identifier: String,
+    pub names: LocalizedNames,
     pub generation: Arc<Generation>,
     pub evolves_from_species_id: Option<SpeciesId>,
     pub baby_trigger_item: Option<Arc<Item>>,
@@ -40,6 +44,7 @@ pub struct Species {
 pub struct UnlinkedSpecies {
     pub id: SpeciesId,
     pub identifier: String,
+    pub names: LocalizedNames,
     pub generation_id: GenerationId,
     pub evolves_from_species_id: Option<SpeciesId>,
     pub baby_trigger_item_id: Option<ItemId>,
@@ -62,8 +67,8 @@ pub struct UnlinkedSpecies {
 impl Linkable for UnlinkedSpecies {
     type Linked = Arc<Species>;
 
-    fn link(&self, data: &PokeData) -> Self::Linked {
-        let generation = data
+    fn link(&self, context: &LinkContext) -> Self::Linked {
+        let generation = context
             .generations
             .get(&self.generation_id)
             .unwrap_or_else(|| {
@@ -75,7 +80,8 @@ impl Linkable for UnlinkedSpecies {
             .clone();
 
         let baby_trigger_item = self.baby_trigger_item_id.map(|id| {
-            data.items
+            context
+                .items
                 .get(&id)
                 .unwrap_or_else(|| {
                     panic!(
@@ -86,7 +92,7 @@ impl Linkable for UnlinkedSpecies {
                 .clone()
         });
 
-        let color = data
+        let color = context
             .colors
             .get(&self.color_id)
             .unwrap_or_else(|| {
@@ -97,7 +103,7 @@ impl Linkable for UnlinkedSpecies {
             })
             .clone();
 
-        let shape = data
+        let shape = context
             .shapes
             .get(&self.shape_id)
             .unwrap_or_else(|| {
@@ -109,13 +115,14 @@ impl Linkable for UnlinkedSpecies {
             .clone();
 
         let habitat = self.habitat_id.map(|id| {
-            data.habitats
+            context
+                .habitats
                 .get(&id)
                 .unwrap_or_else(|| panic!("No habitat '{}' found for species '{}'", id, self.id))
                 .clone()
         });
 
-        let growth_rate = data
+        let growth_rate = context
             .growth_rates
             .get(&self.growth_rate_id)
             .unwrap_or_else(|| {
@@ -129,6 +136,7 @@ impl Linkable for UnlinkedSpecies {
         let species = Species {
             id: self.id,
             identifier: self.identifier.clone(),
+            names: self.names.clone(),
             generation,
             evolves_from_species_id: self.evolves_from_species_id,
             baby_trigger_item,
@@ -149,5 +157,17 @@ impl Linkable for UnlinkedSpecies {
         };
 
         Arc::new(species)
+    }
+}
+
+impl HasIdentifier for Species {
+    fn identifier(&self) -> &str {
+        &self.identifier
+    }
+}
+
+impl HasLocalizedNames for Species {
+    fn localized_names(&self) -> &LocalizedNames {
+        &self.names
     }
 }

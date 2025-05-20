@@ -1,1 +1,13 @@
+pub mod abilities;
+pub mod berries;
+pub mod egg_groups;
+pub mod generations;
+pub mod item_categories;
+pub mod items;
+pub mod location_areas;
+pub mod locations;
+pub mod pokemon;
 pub mod pokemon_type_efficacies;
+pub mod regions;
+pub mod species;
+pub mod versions;

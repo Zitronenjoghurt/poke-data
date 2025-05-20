@@ -1,5 +1,5 @@
+use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
-use crate::data::PokeData;
 use crate::models::generation::{Generation, GenerationId};
 use crate::models::move_method::MoveMethodId;
 use crate::models::region::{Region, RegionId};
@@ -31,8 +31,8 @@ pub struct UnlinkedVersionGroup {
 impl Linkable for UnlinkedVersionGroup {
     type Linked = Arc<VersionGroup>;
 
-    fn link(&self, data: &PokeData) -> Self::Linked {
-        let generation = data
+    fn link(&self, context: &LinkContext) -> Self::Linked {
+        let generation = context
             .generations
             .get(&self.generation_id)
             .unwrap_or_else(|| {
@@ -47,7 +47,8 @@ impl Linkable for UnlinkedVersionGroup {
             .region_ids
             .iter()
             .map(|region_id| {
-                data.regions
+                context
+                    .regions
                     .get(region_id)
                     .unwrap_or_else(|| {
                         panic!(

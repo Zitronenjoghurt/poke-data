@@ -1,5 +1,5 @@
+use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
-use crate::data::PokeData;
 use crate::models::damage_class::{DamageClass, DamageClassId};
 use crate::models::generation::{Generation, GenerationId};
 use crate::models::localized_names::LocalizedNames;
@@ -50,8 +50,8 @@ pub struct UnlinkedPokemonType {
 impl Linkable for UnlinkedPokemonType {
     type Linked = Arc<PokemonType>;
 
-    fn link(&self, data: &PokeData) -> Self::Linked {
-        let generation = data
+    fn link(&self, context: &LinkContext) -> Self::Linked {
+        let generation = context
             .generations
             .get(&self.generation_id)
             .unwrap_or_else(|| {
@@ -63,7 +63,8 @@ impl Linkable for UnlinkedPokemonType {
             .clone();
 
         let damage_class = self.damage_class_id.map(|damage_class_id| {
-            data.damage_classes
+            context
+                .damage_classes
                 .get(&damage_class_id)
                 .unwrap_or_else(|| {
                     panic!(

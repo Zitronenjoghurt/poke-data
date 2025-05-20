@@ -1,8 +1,9 @@
+use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
-use crate::data::PokeData;
 use crate::models::generation::GenerationId;
 use crate::models::language::LanguageId;
 use crate::models::region::{Region, RegionId};
+use crate::traits::has_identifier::HasIdentifier;
 use crate::types::language::Language;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -69,15 +70,17 @@ pub struct UnlinkedLocation {
 impl Linkable for UnlinkedLocation {
     type Linked = Arc<Location>;
 
-    fn link(&self, data: &PokeData) -> Self::Linked {
+    fn link(&self, context: &LinkContext) -> Self::Linked {
         let region = self.region_id.map(|region_id| {
-            data.regions
+            context
+                .regions
                 .get(&region_id)
                 .unwrap_or_else(|| {
                     panic!("No region '{}' found for location '{}'", region_id, self.id)
                 })
                 .clone()
         });
+
         let location = Location {
             id: self.id,
             identifier: self.identifier.clone(),
@@ -85,6 +88,13 @@ impl Linkable for UnlinkedLocation {
             names: self.names.clone(),
             game_indices: self.game_indices.clone(),
         };
+
         Arc::new(location)
+    }
+}
+
+impl HasIdentifier for Location {
+    fn identifier(&self) -> &str {
+        &self.identifier
     }
 }
