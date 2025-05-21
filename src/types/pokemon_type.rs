@@ -1,6 +1,7 @@
 use crate::models::pokemon_type::PokemonTypeId;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Default, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Default, Serialize, Deserialize, Copy, Clone, PartialEq, Eq, Hash)]
 #[repr(u16)]
 pub enum Type {
     #[default]

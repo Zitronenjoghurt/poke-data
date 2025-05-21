@@ -60,11 +60,14 @@ use crate::models::poke_api::pokemon_shape_prose::ShapeProseData;
 use crate::models::poke_api::pokemon_shapes::ShapeData;
 use crate::models::poke_api::pokemon_species::PokemonSpeciesData;
 use crate::models::poke_api::pokemon_species_names::PokemonSpeciesNameData;
+use crate::models::poke_api::pokemon_stats::PokemonStatData;
 use crate::models::poke_api::pokemon_type_efficacy::PokemonTypeEfficacyData;
 use crate::models::poke_api::pokemon_type_efficacy_past::PokemonTypeEfficacyPastData;
 use crate::models::poke_api::pokemon_type_game_indices::PokemonTypeGameIndexData;
 use crate::models::poke_api::pokemon_type_names::PokemonTypeNameData;
 use crate::models::poke_api::pokemon_types::PokemonTypeData;
+use crate::models::poke_api::pokemon_types_map::PokemonTypeMapData;
+use crate::models::poke_api::pokemon_types_past_map::PokemonTypePastMapData;
 use crate::models::poke_api::region::RegionData;
 use crate::models::poke_api::region_names::RegionNameData;
 use crate::models::poke_api::version_group_pokemon_move_methods::VersionGroupMoveMethodData;
@@ -169,7 +172,10 @@ pub struct RawData {
     pub location_area_encounter_rates: HashMap<LocationAreaId, Vec<LocationAreaEncounterRateData>>,
     pub location_area_prose: HashMap<LocationAreaId, Vec<LocationAreaProseData>>,
     pub pokemon: HashMap<PokemonId, PokemonData>,
+    pub pokemon_stats: HashMap<PokemonId, Vec<PokemonStatData>>,
     pub pokemon_types: HashMap<PokemonTypeId, PokemonTypeData>,
+    pub pokemon_types_map: HashMap<PokemonId, Vec<PokemonTypeMapData>>,
+    pub pokemon_types_past_map: HashMap<PokemonId, Vec<PokemonTypePastMapData>>,
     pub pokemon_type_names: HashMap<PokemonTypeId, Vec<PokemonTypeNameData>>,
     pub pokemon_type_game_indices: HashMap<PokemonTypeId, Vec<PokemonTypeGameIndexData>>,
     pub pokemon_type_efficacies: Vec<PokemonTypeEfficacyData>,
@@ -305,7 +311,16 @@ impl RawData {
             pokemon_abilities: PokemonAbilityData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
+            pokemon_stats: PokemonStatData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             pokemon_types: PokemonTypeData::load(base_path).await?.into_id_map(),
+            pokemon_types_map: PokemonTypeMapData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            pokemon_types_past_map: PokemonTypePastMapData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             pokemon_type_names: PokemonTypeNameData::load(base_path)
                 .await?
                 .into_id_map_grouped(),

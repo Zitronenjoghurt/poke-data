@@ -1,6 +1,8 @@
 use crate::data_structures::entity_collection::HasNameSearchIndex;
 use crate::tests::load_data;
 use crate::types::language::Language;
+use crate::types::pokemon_type::Type;
+use crate::types::stat::Stat;
 
 #[test]
 fn test_ability() {
@@ -86,6 +88,38 @@ fn test_pokemon() {
     let data = load_data();
     let mareep = data.pokemon.find_by_name("mareeep", 0.5).unwrap();
     assert_eq!(mareep.identifier, "mareep");
+    assert_eq!(mareep.base_stats.get_value(Stat::Hp), 55);
+    assert_eq!(mareep.base_stats.get_value(Stat::Attack), 40);
+    assert_eq!(mareep.base_stats.get_value(Stat::Defense), 40);
+    assert_eq!(mareep.base_stats.get_value(Stat::SpAttack), 65);
+    assert_eq!(mareep.base_stats.get_value(Stat::SpDefense), 45);
+    assert_eq!(mareep.base_stats.get_value(Stat::Speed), 35);
+    assert_eq!(mareep.get_types(1).clone(), vec![Type::Electric]);
+
+    let giratina = data.pokemon.find_by_name("giratina", 0.5).unwrap();
+    assert_eq!(
+        giratina.get_types(1).clone(),
+        vec![Type::Ghost, Type::Dragon]
+    );
+
+    let magnemite = data.pokemon.find_by_name("magnemite", 0.5).unwrap();
+    assert_eq!(magnemite.get_types(1).clone(), vec![Type::Electric]);
+    assert_eq!(
+        magnemite.get_types(2).clone(),
+        vec![Type::Electric, Type::Steel]
+    );
+
+    let clefairy = data.pokemon.find_by_name("clefairy", 0.5).unwrap();
+    assert_eq!(clefairy.get_types(1).clone(), vec![Type::Normal]);
+    assert_eq!(clefairy.get_types(2).clone(), vec![Type::Normal]);
+    assert_eq!(clefairy.get_types(3).clone(), vec![Type::Normal]);
+    assert_eq!(clefairy.get_types(4).clone(), vec![Type::Normal]);
+    assert_eq!(clefairy.get_types(5).clone(), vec![Type::Normal]);
+    assert_eq!(clefairy.get_types(6).clone(), vec![Type::Fairy]);
+    assert_eq!(clefairy.get_types(7).clone(), vec![Type::Fairy]);
+    assert_eq!(clefairy.get_types(8).clone(), vec![Type::Fairy]);
+    assert_eq!(clefairy.get_types(9).clone(), vec![Type::Fairy]);
+    assert_eq!(clefairy.get_types(10).clone(), vec![Type::Fairy]);
 }
 
 #[test]

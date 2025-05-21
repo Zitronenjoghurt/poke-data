@@ -1,11 +1,13 @@
 use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
 use crate::models::encounter::Encounter;
+use crate::models::generation::GenerationId;
 use crate::models::pokemon::ability::{PokemonAbility, UnlinkedPokemonAbility};
 use crate::models::species::{Species, SpeciesId};
 use crate::models::version::VersionId;
 use crate::traits::has_identifier::HasIdentifier;
-use crate::traits::has_localized_names::HasLocalizedNames;
+use crate::types::base_stats::BaseStats;
+use crate::types::pokemon_type::Type;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -19,8 +21,14 @@ pub struct Pokemon {
     pub id: PokemonId,
     pub identifier: String,
     pub species: Arc<Species>,
+    types: Vec<Type>,
+    /// The last generation this Pokémon had the specified type combination
+    past_types: HashMap<GenerationId, Vec<Type>>,
+    /// Height of this Pokémon in decimeters
     pub height: u16,
+    /// Weight of this Pokémon in hectograms
     pub weight: u16,
+    pub base_stats: BaseStats,
     pub base_experience: u16,
     pub order: Option<u16>,
     pub is_default: bool,
@@ -28,13 +36,34 @@ pub struct Pokemon {
     pub encounters: HashMap<VersionId, Vec<Arc<Encounter>>>,
 }
 
+impl Pokemon {
+    pub fn get_types(&self, generation_id: GenerationId) -> &Vec<Type> {
+        if self.past_types.is_empty() {
+            return &self.types;
+        }
+
+        match self
+            .past_types
+            .keys()
+            .filter(|key| generation_id <= **key)
+            .max()
+        {
+            Some(latest_applicable_gen) => &self.past_types[latest_applicable_gen],
+            None => &self.types,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UnlinkedPokemon {
     pub id: PokemonId,
     pub identifier: String,
     pub species_id: SpeciesId,
+    pub types: Vec<Type>,
+    pub past_types: HashMap<GenerationId, Vec<Type>>,
     pub height: u16,
     pub weight: u16,
+    pub base_stats: BaseStats,
     pub base_experience: u16,
     pub order: Option<u16>,
     pub is_default: bool,
@@ -84,8 +113,11 @@ impl Linkable for UnlinkedPokemon {
             id: self.id,
             identifier: self.identifier.clone(),
             species,
+            types: self.types.clone(),
+            past_types: self.past_types.clone(),
             height: self.height,
             weight: self.weight,
+            base_stats: self.base_stats.clone(),
             base_experience: self.base_experience,
             order: self.order,
             is_default: self.is_default,
