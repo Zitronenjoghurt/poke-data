@@ -1,4 +1,6 @@
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[repr(u8)]
 pub enum Stat {
     Hp = 1,
@@ -13,7 +15,7 @@ pub enum Stat {
 
 impl From<u8> for Stat {
     fn from(value: u8) -> Self {
-        match value & 0b111 {
+        match value & 0b1111 {
             1 => Self::Hp,
             2 => Self::Attack,
             3 => Self::Defense,
@@ -22,7 +24,7 @@ impl From<u8> for Stat {
             6 => Self::Speed,
             7 => Self::Accuracy,
             8 => Self::Evasion,
-            _ => unreachable!(),
+            _ => unreachable!("Invalid stat value: {}", value),
         }
     }
 }

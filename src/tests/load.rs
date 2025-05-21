@@ -89,6 +89,27 @@ fn test_location() {
 }
 
 #[test]
+fn test_move() {
+    let data = load_data();
+    let hyper_beam = data.moves.find_by_name("hypa beamm", 0.5).unwrap();
+    assert_eq!(hyper_beam.identifier, "hyper-beam");
+    assert_eq!(
+        hyper_beam.names.get_by_language(Language::French),
+        "Ultralaser"
+    );
+    assert_eq!(hyper_beam.power, Some(150));
+    assert_eq!(hyper_beam.accuracy, Some(90));
+    assert_eq!(hyper_beam.pp, Some(5));
+    assert_eq!(hyper_beam.generation.identifier, "generation-i");
+    assert_eq!(hyper_beam.pokemon_type, Type::Normal);
+    assert_eq!(hyper_beam.target.identifier, "selected-pokemon");
+    assert_eq!(hyper_beam.damage_class.identifier, "special");
+
+    let contest_type = hyper_beam.contest_type.clone().unwrap();
+    assert_eq!(contest_type.identifier, "cool");
+}
+
+#[test]
 fn test_pokemon() {
     let data = load_data();
     let mareep = data.pokemon.find_by_name("mareeep", 0.5).unwrap();

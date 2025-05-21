@@ -53,6 +53,11 @@ use crate::models::poke_api::location_areas::LocationAreaData;
 use crate::models::poke_api::location_game_indices::LocationGameIndexData;
 use crate::models::poke_api::location_names::LocationNameData;
 use crate::models::poke_api::locations::LocationData;
+use crate::models::poke_api::move_ailment_names::MoveAilmentNameData;
+use crate::models::poke_api::move_ailments::MoveAilmentData;
+use crate::models::poke_api::move_categories::MoveCategoryData;
+use crate::models::poke_api::move_category_prose::MoveCategoryProseData;
+use crate::models::poke_api::move_changelogs::MoveChangelogData;
 use crate::models::poke_api::move_damage_class_prose::DamageClassProseData;
 use crate::models::poke_api::move_damage_classes::DamageClassData;
 use crate::models::poke_api::move_effect_changelog::{
@@ -61,8 +66,16 @@ use crate::models::poke_api::move_effect_changelog::{
 use crate::models::poke_api::move_effect_changelog_prose::MoveEffectChangelogProseData;
 use crate::models::poke_api::move_effect_prose::MoveEffectProseData;
 use crate::models::poke_api::move_effects::MoveEffectData;
+use crate::models::poke_api::move_flag_map::MoveFlagMapData;
+use crate::models::poke_api::move_flag_prose::MoveFlagProseData;
+use crate::models::poke_api::move_flags::MoveFlagData;
+use crate::models::poke_api::move_flavor_texts::MoveFlavorTextData;
+use crate::models::poke_api::move_meta::MoveMetaData;
+use crate::models::poke_api::move_meta_stat_changes::MoveMetaStatChangeData;
+use crate::models::poke_api::move_names::MoveNameData;
 use crate::models::poke_api::move_target_prose::MoveTargetProseData;
 use crate::models::poke_api::move_targets::MoveTargetData;
+use crate::models::poke_api::moves::MoveData;
 use crate::models::poke_api::pokemon::PokemonData;
 use crate::models::poke_api::pokemon_abilities::PokemonAbilityData;
 use crate::models::poke_api::pokemon_color_names::ColorNameData;
@@ -120,7 +133,11 @@ use poke_data::models::localized_names::LocalizedStrings;
 use poke_data::models::location::LocationId;
 use poke_data::models::location_area::LocationAreaId;
 use poke_data::models::pokemon::PokemonId;
+use poke_data::models::pokemon_move::PokemonMoveId;
+use poke_data::models::pokemon_move_ailment::PokemonMoveAilmentId;
+use poke_data::models::pokemon_move_category::PokemonMoveCategoryId;
 use poke_data::models::pokemon_move_effect::PokemonMoveEffectId;
+use poke_data::models::pokemon_move_flag::PokemonMoveFlagId;
 use poke_data::models::pokemon_move_target::PokemonMoveTargetId;
 use poke_data::models::pokemon_type::PokemonTypeId;
 use poke_data::models::region::RegionId;
@@ -198,11 +215,24 @@ pub struct RawData {
     pub location_areas: HashMap<LocationAreaId, LocationAreaData>,
     pub location_area_encounter_rates: HashMap<LocationAreaId, Vec<LocationAreaEncounterRateData>>,
     pub location_area_prose: HashMap<LocationAreaId, Vec<LocationAreaProseData>>,
+    pub moves: HashMap<PokemonMoveId, MoveData>,
+    pub move_changelogs: HashMap<PokemonMoveId, Vec<MoveChangelogData>>,
+    pub move_flag_map: HashMap<PokemonMoveId, Vec<MoveFlagMapData>>,
+    pub move_flavor_texts: HashMap<PokemonMoveId, Vec<MoveFlavorTextData>>,
+    pub move_meta: HashMap<PokemonMoveId, MoveMetaData>,
+    pub move_meta_stat_changes: HashMap<PokemonMoveId, Vec<MoveMetaStatChangeData>>,
+    pub move_names: HashMap<PokemonMoveId, Vec<MoveNameData>>,
+    pub move_ailments: HashMap<PokemonMoveAilmentId, MoveAilmentData>,
+    pub move_ailment_names: HashMap<PokemonMoveAilmentId, Vec<MoveAilmentNameData>>,
+    pub move_categories: HashMap<PokemonMoveCategoryId, MoveCategoryData>,
+    pub move_category_prose: HashMap<PokemonMoveCategoryId, Vec<MoveCategoryProseData>>,
     pub move_effects: HashMap<PokemonMoveEffectId, MoveEffectData>,
     pub move_effect_prose: HashMap<PokemonMoveEffectId, Vec<MoveEffectProseData>>,
     pub move_effect_changelogs: HashMap<PokemonMoveEffectId, Vec<MoveEffectChangelogData>>,
     pub move_effect_changelog_prose:
         HashMap<MoveEffectChangelogId, Vec<MoveEffectChangelogProseData>>,
+    pub move_flags: HashMap<PokemonMoveFlagId, MoveFlagData>,
+    pub move_flag_prose: HashMap<PokemonMoveFlagId, Vec<MoveFlagProseData>>,
     pub move_targets: HashMap<PokemonMoveTargetId, MoveTargetData>,
     pub move_target_prose: HashMap<PokemonMoveTargetId, Vec<MoveTargetProseData>>,
     pub pokemon: HashMap<PokemonId, PokemonData>,
@@ -354,6 +384,29 @@ impl RawData {
             location_area_prose: LocationAreaProseData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
+            moves: MoveData::load(base_path).await?.into_id_map(),
+            move_changelogs: MoveChangelogData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            move_flag_map: MoveFlagMapData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            move_flavor_texts: MoveFlavorTextData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            move_meta: MoveMetaData::load(base_path).await?.into_id_map(),
+            move_meta_stat_changes: MoveMetaStatChangeData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            move_names: MoveNameData::load(base_path).await?.into_id_map_grouped(),
+            move_ailments: MoveAilmentData::load(base_path).await?.into_id_map(),
+            move_ailment_names: MoveAilmentNameData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            move_categories: MoveCategoryData::load(base_path).await?.into_id_map(),
+            move_category_prose: MoveCategoryProseData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             move_effects: MoveEffectData::load(base_path).await?.into_id_map(),
             move_effect_prose: MoveEffectProseData::load(base_path)
                 .await?
@@ -362,6 +415,10 @@ impl RawData {
                 .await?
                 .into_id_map_grouped(),
             move_effect_changelog_prose: MoveEffectChangelogProseData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            move_flags: MoveFlagData::load(base_path).await?.into_id_map(),
+            move_flag_prose: MoveFlagProseData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
             move_targets: MoveTargetData::load(base_path).await?.into_id_map(),
@@ -424,7 +481,7 @@ impl RawData {
             berry_flavors: self.parse_berry_flavors(),
             colors: self.colors.clone().into_model(self),
             contest_effects: self.contest_effects.clone().into_model(self),
-            contest_types: Default::default(),
+            contest_types: self.contest_types.clone().into_model(self),
             damage_classes: self.damage_classes.clone().into_model(self),
             encounters: self.encounters.clone().into_model(self),
             encounter_conditions: self.encounter_conditions.clone().into_model(self),
@@ -442,7 +499,11 @@ impl RawData {
             item_pockets: self.item_pockets.clone().into_model(self),
             locations: self.locations.clone().into_model(self),
             location_areas: self.location_areas.clone().into_model(self),
+            moves: self.moves.clone().into_model(self),
+            move_ailments: self.move_ailments.clone().into_model(self),
+            move_categories: self.move_categories.clone().into_model(self),
             move_effects: self.move_effects.clone().into_model(self),
+            move_flags: self.move_flags.clone().into_model(self),
             move_targets: self.move_targets.clone().into_model(self),
             pokemon: self.pokemon.clone().into_model(self),
             pokemon_types: self.pokemon_types.clone().into_model(self),

@@ -6,6 +6,7 @@ use crate::collections::item_categories::ItemCategoriesCollection;
 use crate::collections::items::ItemsCollection;
 use crate::collections::location_areas::LocationAreasCollection;
 use crate::collections::locations::LocationsCollection;
+use crate::collections::moves::MovesCollection;
 use crate::collections::pokemon::PokemonCollection;
 use crate::collections::pokemon_type_efficacies::PokemonTypeEfficaciesCollection;
 use crate::collections::regions::RegionsCollection;
@@ -40,7 +41,11 @@ use crate::models::item_pocket::{ItemPocket, ItemPocketId};
 use crate::models::location::{Location, LocationId};
 use crate::models::location_area::{LocationArea, LocationAreaId};
 use crate::models::pokemon::{Pokemon, PokemonId};
+use crate::models::pokemon_move::{PokemonMove, PokemonMoveId};
+use crate::models::pokemon_move_ailment::{PokemonMoveAilment, PokemonMoveAilmentId};
+use crate::models::pokemon_move_category::{PokemonMoveCategory, PokemonMoveCategoryId};
 use crate::models::pokemon_move_effect::{PokemonMoveEffect, PokemonMoveEffectId};
+use crate::models::pokemon_move_flag::{PokemonMoveFlag, PokemonMoveFlagId};
 use crate::models::pokemon_move_target::{PokemonMoveTarget, PokemonMoveTargetId};
 use crate::models::pokemon_type::{PokemonType, PokemonTypeId};
 use crate::models::region::{Region, RegionId};
@@ -79,7 +84,11 @@ pub struct LinkContext {
     pub item_pockets: HashMap<ItemPocketId, Arc<ItemPocket>>,
     pub locations: HashMap<LocationId, Arc<Location>>,
     pub location_areas: HashMap<LocationAreaId, Arc<LocationArea>>,
+    pub moves: HashMap<PokemonMoveId, Arc<PokemonMove>>,
+    pub move_ailments: HashMap<PokemonMoveAilmentId, Arc<PokemonMoveAilment>>,
+    pub move_categories: HashMap<PokemonMoveCategoryId, Arc<PokemonMoveCategory>>,
     pub move_effects: HashMap<PokemonMoveEffectId, Arc<PokemonMoveEffect>>,
+    pub move_flags: HashMap<PokemonMoveFlagId, Arc<PokemonMoveFlag>>,
     pub move_targets: HashMap<PokemonMoveTargetId, Arc<PokemonMoveTarget>>,
     pub pokemon: HashMap<PokemonId, Arc<Pokemon>>,
     pub pokemon_types: HashMap<PokemonTypeId, Arc<PokemonType>>,
@@ -103,6 +112,7 @@ impl LinkContext {
             item_categories: ItemCategoriesCollection::new(&self),
             locations: LocationsCollection::new(&self),
             location_areas: LocationAreasCollection::new(&self),
+            moves: MovesCollection::new(&self),
             pokemon: PokemonCollection::new(&self),
             regions: RegionsCollection::new(&self),
             species: SpeciesCollection::new(&self),

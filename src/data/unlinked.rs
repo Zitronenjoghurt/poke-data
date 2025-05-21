@@ -29,7 +29,11 @@ use crate::models::item_pocket::{ItemPocket, ItemPocketId};
 use crate::models::location::{LocationId, UnlinkedLocation};
 use crate::models::location_area::{LocationAreaId, UnlinkedLocationArea};
 use crate::models::pokemon::{PokemonId, UnlinkedPokemon};
+use crate::models::pokemon_move::{PokemonMoveId, UnlinkedPokemonMove};
+use crate::models::pokemon_move_ailment::{PokemonMoveAilment, PokemonMoveAilmentId};
+use crate::models::pokemon_move_category::{PokemonMoveCategory, PokemonMoveCategoryId};
 use crate::models::pokemon_move_effect::{PokemonMoveEffect, PokemonMoveEffectId};
+use crate::models::pokemon_move_flag::{PokemonMoveFlag, PokemonMoveFlagId};
 use crate::models::pokemon_move_target::{PokemonMoveTarget, PokemonMoveTargetId};
 use crate::models::pokemon_type::{PokemonTypeId, UnlinkedPokemonType};
 use crate::models::pokemon_type_efficacies::{
@@ -75,7 +79,11 @@ pub struct UnlinkedPokeData {
     pub item_pockets: HashMap<ItemPocketId, ItemPocket>,
     pub locations: HashMap<LocationId, UnlinkedLocation>,
     pub location_areas: HashMap<LocationAreaId, UnlinkedLocationArea>,
+    pub moves: HashMap<PokemonMoveId, UnlinkedPokemonMove>,
+    pub move_ailments: HashMap<PokemonMoveAilmentId, PokemonMoveAilment>,
+    pub move_categories: HashMap<PokemonMoveCategoryId, PokemonMoveCategory>,
     pub move_effects: HashMap<PokemonMoveEffectId, PokemonMoveEffect>,
+    pub move_flags: HashMap<PokemonMoveFlagId, PokemonMoveFlag>,
     pub move_targets: HashMap<PokemonMoveTargetId, PokemonMoveTarget>,
     pub pokemon: HashMap<PokemonId, UnlinkedPokemon>,
     pub pokemon_types: HashMap<PokemonTypeId, UnlinkedPokemonType>,
@@ -119,7 +127,10 @@ impl UnlinkedPokeData {
         context.item_flags = self.item_flags.clone().into_arc_map();
         context.item_fling_effects = self.item_fling_effects.clone().into_arc_map();
         context.item_pockets = self.item_pockets.clone().into_arc_map();
+        context.move_ailments = self.move_ailments.clone().into_arc_map();
+        context.move_categories = self.move_categories.clone().into_arc_map();
         context.move_effects = self.move_effects.clone().into_arc_map();
+        context.move_flags = self.move_flags.clone().into_arc_map();
         context.move_targets = self.move_targets.clone().into_arc_map();
         context.regions = self.regions.clone().into_arc_map();
         context.shapes = self.shapes.clone().into_arc_map();
@@ -136,6 +147,8 @@ impl UnlinkedPokeData {
 
         context.version_groups = self.version_groups.link(&context);
         context.versions = self.versions.link(&context);
+
+        context.moves = self.moves.link(&context);
 
         context.encounter_condition_values = self.encounter_condition_values.link(&context);
 

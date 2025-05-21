@@ -6,6 +6,7 @@ use crate::collections::item_categories::ItemCategoriesCollection;
 use crate::collections::items::ItemsCollection;
 use crate::collections::location_areas::LocationAreasCollection;
 use crate::collections::locations::LocationsCollection;
+use crate::collections::moves::MovesCollection;
 use crate::collections::pokemon::PokemonCollection;
 use crate::collections::pokemon_type_efficacies::PokemonTypeEfficaciesCollection;
 use crate::collections::regions::RegionsCollection;
@@ -27,6 +28,7 @@ pub struct PokeData {
     pub item_categories: ItemCategoriesCollection,
     pub locations: LocationsCollection,
     pub location_areas: LocationAreasCollection,
+    pub moves: MovesCollection,
     pub pokemon: PokemonCollection,
     pub regions: RegionsCollection,
     pub species: SpeciesCollection,
