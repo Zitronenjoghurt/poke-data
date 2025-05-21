@@ -29,6 +29,7 @@ pub mod location;
 pub mod location_area;
 pub mod move_method;
 pub mod pokemon;
+pub mod pokemon_move_effect;
 pub mod pokemon_move_target;
 pub mod pokemon_type;
 pub mod pokemon_type_efficacies;
