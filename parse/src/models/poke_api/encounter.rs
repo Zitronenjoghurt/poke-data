@@ -1,6 +1,5 @@
 use crate::models::poke_api::encounter_slots::EncounterSlotId;
 use crate::models::poke_api::PokeApiModel;
-use crate::traits::get_model::GetModel;
 use crate::traits::has_id::HasId;
 use crate::traits::into_model::IntoModel;
 use crate::RawData;

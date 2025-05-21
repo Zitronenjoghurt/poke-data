@@ -58,6 +58,8 @@ pub mod location_names;
 pub mod locations;
 pub mod move_damage_class_prose;
 pub mod move_damage_classes;
+pub mod move_target_prose;
+pub mod move_targets;
 pub mod pokemon;
 pub mod pokemon_abilities;
 pub mod pokemon_color_names;

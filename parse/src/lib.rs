@@ -55,6 +55,8 @@ use crate::models::poke_api::location_names::LocationNameData;
 use crate::models::poke_api::locations::LocationData;
 use crate::models::poke_api::move_damage_class_prose::DamageClassProseData;
 use crate::models::poke_api::move_damage_classes::DamageClassData;
+use crate::models::poke_api::move_target_prose::MoveTargetProseData;
+use crate::models::poke_api::move_targets::MoveTargetData;
 use crate::models::poke_api::pokemon::PokemonData;
 use crate::models::poke_api::pokemon_abilities::PokemonAbilityData;
 use crate::models::poke_api::pokemon_color_names::ColorNameData;
@@ -112,6 +114,7 @@ use poke_data::models::localized_names::LocalizedStrings;
 use poke_data::models::location::LocationId;
 use poke_data::models::location_area::LocationAreaId;
 use poke_data::models::pokemon::PokemonId;
+use poke_data::models::pokemon_move_target::PokemonMoveTargetId;
 use poke_data::models::pokemon_type::PokemonTypeId;
 use poke_data::models::region::RegionId;
 use poke_data::models::shape::ShapeId;
@@ -188,6 +191,8 @@ pub struct RawData {
     pub location_areas: HashMap<LocationAreaId, LocationAreaData>,
     pub location_area_encounter_rates: HashMap<LocationAreaId, Vec<LocationAreaEncounterRateData>>,
     pub location_area_prose: HashMap<LocationAreaId, Vec<LocationAreaProseData>>,
+    pub move_targets: HashMap<PokemonMoveTargetId, MoveTargetData>,
+    pub move_target_prose: HashMap<PokemonMoveTargetId, Vec<MoveTargetProseData>>,
     pub pokemon: HashMap<PokemonId, PokemonData>,
     pub pokemon_stats: HashMap<PokemonId, Vec<PokemonStatData>>,
     pub pokemon_types: HashMap<PokemonTypeId, PokemonTypeData>,
@@ -337,6 +342,10 @@ impl RawData {
             location_area_prose: LocationAreaProseData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
+            move_targets: MoveTargetData::load(base_path).await?.into_id_map(),
+            move_target_prose: MoveTargetProseData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             pokemon: PokemonData::load(base_path).await?.into_id_map(),
             pokemon_abilities: PokemonAbilityData::load(base_path)
                 .await?
@@ -411,6 +420,7 @@ impl RawData {
             item_pockets: self.item_pockets.clone().into_model(self),
             locations: self.locations.clone().into_model(self),
             location_areas: self.location_areas.clone().into_model(self),
+            move_targets: self.move_targets.clone().into_model(self),
             pokemon: self.pokemon.clone().into_model(self),
             pokemon_types: self.pokemon_types.clone().into_model(self),
             pokemon_type_efficacies: self.pokemon_type_efficacies.clone().into_model(self),

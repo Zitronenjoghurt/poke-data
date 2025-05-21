@@ -40,6 +40,7 @@ use crate::models::item_pocket::{ItemPocket, ItemPocketId};
 use crate::models::location::{Location, LocationId};
 use crate::models::location_area::{LocationArea, LocationAreaId};
 use crate::models::pokemon::{Pokemon, PokemonId};
+use crate::models::pokemon_move_target::{PokemonMoveTarget, PokemonMoveTargetId};
 use crate::models::pokemon_type::{PokemonType, PokemonTypeId};
 use crate::models::region::{Region, RegionId};
 use crate::models::shape::{Shape, ShapeId};
@@ -77,6 +78,7 @@ pub struct LinkContext {
     pub item_pockets: HashMap<ItemPocketId, Arc<ItemPocket>>,
     pub locations: HashMap<LocationId, Arc<Location>>,
     pub location_areas: HashMap<LocationAreaId, Arc<LocationArea>>,
+    pub move_targets: HashMap<PokemonMoveTargetId, Arc<PokemonMoveTarget>>,
     pub pokemon: HashMap<PokemonId, Arc<Pokemon>>,
     pub pokemon_types: HashMap<PokemonTypeId, Arc<PokemonType>>,
     pub pokemon_type_efficacies: PokemonTypeEfficaciesCollection,
