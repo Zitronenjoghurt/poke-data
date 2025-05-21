@@ -1,8 +1,9 @@
 use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
 use crate::models::berry_firmness::{BerryFirmness, BerryFirmnessId};
+use crate::models::berry_flavor::{BerryFlavor, BerryFlavorId};
 use crate::models::item::{Item, ItemId};
-use crate::models::localized_names::LocalizedNames;
+use crate::models::localized_names::LocalizedStrings;
 use crate::traits::has_identifier::HasIdentifier;
 use crate::traits::has_localized_names::HasLocalizedNames;
 use serde::{Deserialize, Serialize};
@@ -20,6 +21,7 @@ pub struct Berry {
     pub growth_time: u8,
     pub soil_dryness: u8,
     pub smoothness: u8,
+    pub flavors: Vec<(Arc<BerryFlavor>, u8)>,
     // ToDo: Natural Gift Power
     // ToDo: Natural Gift Type
 }
@@ -34,6 +36,7 @@ pub struct UnlinkedBerry {
     pub growth_time: u8,
     pub soil_dryness: u8,
     pub smoothness: u8,
+    pub flavors: Vec<(BerryFlavorId, u8)>,
 }
 
 impl Linkable for UnlinkedBerry {
@@ -57,6 +60,24 @@ impl Linkable for UnlinkedBerry {
             })
             .clone();
 
+        let flavors = self
+            .flavors
+            .iter()
+            .map(|(flavor_id, amount)| {
+                let flavor = context
+                    .berry_flavors
+                    .get(flavor_id)
+                    .unwrap_or_else(|| {
+                        panic!(
+                            "No berry flavor '{}' found for berry '{}'",
+                            flavor_id, self.id
+                        )
+                    })
+                    .clone();
+                (flavor, *amount)
+            })
+            .collect();
+
         let berry = Berry {
             id: self.id,
             item,
@@ -66,6 +87,7 @@ impl Linkable for UnlinkedBerry {
             growth_time: self.growth_time,
             soil_dryness: self.soil_dryness,
             smoothness: self.smoothness,
+            flavors,
         };
 
         Arc::new(berry)
@@ -79,7 +101,7 @@ impl HasIdentifier for Berry {
 }
 
 impl HasLocalizedNames for Berry {
-    fn localized_names(&self) -> &LocalizedNames {
+    fn localized_names(&self) -> &LocalizedStrings {
         &self.item.names
     }
 }

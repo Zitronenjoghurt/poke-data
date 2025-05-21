@@ -16,7 +16,10 @@ use crate::data_structures::entity_collection::EntityCollection;
 use crate::models::ability::{Ability, AbilityId};
 use crate::models::berry::{Berry, BerryId};
 use crate::models::berry_firmness::{BerryFirmness, BerryFirmnessId};
+use crate::models::berry_flavor::{BerryFlavor, BerryFlavorId};
 use crate::models::color::{Color, ColorId};
+use crate::models::contest_effect::{ContestEffect, ContestEffectId};
+use crate::models::contest_type::{ContestType, ContestTypeId};
 use crate::models::damage_class::{DamageClass, DamageClassId};
 use crate::models::egg_group::{EggGroup, EggGroupId};
 use crate::models::encounter::{Encounter, EncounterId};
@@ -41,6 +44,7 @@ use crate::models::pokemon_type::{PokemonType, PokemonTypeId};
 use crate::models::region::{Region, RegionId};
 use crate::models::shape::{Shape, ShapeId};
 use crate::models::species::{Species, SpeciesId};
+use crate::models::super_contest_effect::{SuperContestEffect, SuperContestEffectId};
 use crate::models::version::{Version, VersionId};
 use crate::models::version_group::{VersionGroup, VersionGroupId};
 use std::collections::HashMap;
@@ -51,7 +55,10 @@ pub struct LinkContext {
     pub abilities: HashMap<AbilityId, Arc<Ability>>,
     pub berries: HashMap<BerryId, Arc<Berry>>,
     pub berry_firmnesses: HashMap<BerryFirmnessId, Arc<BerryFirmness>>,
+    pub berry_flavors: HashMap<BerryFlavorId, Arc<BerryFlavor>>,
     pub colors: HashMap<ColorId, Arc<Color>>,
+    pub contest_effects: HashMap<ContestEffectId, Arc<ContestEffect>>,
+    pub contest_types: HashMap<ContestTypeId, Arc<ContestType>>,
     pub damage_classes: HashMap<DamageClassId, Arc<DamageClass>>,
     pub encounters: HashMap<EncounterId, Arc<Encounter>>,
     pub encounter_conditions: HashMap<EncounterConditionId, Arc<EncounterCondition>>,
@@ -76,6 +83,7 @@ pub struct LinkContext {
     pub regions: HashMap<RegionId, Arc<Region>>,
     pub shapes: HashMap<ShapeId, Arc<Shape>>,
     pub species: HashMap<SpeciesId, Arc<Species>>,
+    pub super_contest_effects: HashMap<SuperContestEffectId, Arc<SuperContestEffect>>,
     pub versions: HashMap<VersionId, Arc<Version>>,
     pub version_groups: HashMap<VersionGroupId, Arc<VersionGroup>>,
 }

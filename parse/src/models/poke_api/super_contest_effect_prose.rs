@@ -1,37 +1,37 @@
 use crate::models::poke_api::PokeApiModel;
 use crate::traits::has_id::HasId;
 use crate::traits::has_localized_name::HasLocalizedString;
-use poke_data::models::habitat::HabitatId;
 use poke_data::models::language::LanguageId;
+use poke_data::models::super_contest_effect::SuperContestEffectId;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct HabitatNameData {
-    pokemon_habitat_id: HabitatId,
+pub struct SuperContestEffectProseData {
+    super_contest_effect_id: SuperContestEffectId,
     local_language_id: LanguageId,
-    name: String,
+    flavor_text: String,
 }
 
-impl PokeApiModel for HabitatNameData {
+impl PokeApiModel for SuperContestEffectProseData {
     fn file_name() -> &'static str {
-        "pokemon_habitat_names"
+        "super_contest_effect_prose"
     }
 }
 
-impl HasId for HabitatNameData {
-    type Id = HabitatId;
+impl HasId for SuperContestEffectProseData {
+    type Id = SuperContestEffectId;
 
     fn id(&self) -> Self::Id {
-        self.pokemon_habitat_id
+        self.super_contest_effect_id
     }
 }
 
-impl HasLocalizedString for HabitatNameData {
+impl HasLocalizedString for SuperContestEffectProseData {
     fn language(&self) -> LanguageId {
         self.local_language_id
     }
 
     fn string(&self) -> String {
-        self.name.clone()
+        self.flavor_text.clone()
     }
 }

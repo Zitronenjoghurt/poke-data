@@ -4,9 +4,9 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LocalizedNames(HashMap<LanguageId, String>);
+pub struct LocalizedStrings(HashMap<LanguageId, String>);
 
-impl LocalizedNames {
+impl LocalizedStrings {
     pub fn new(localizations: HashMap<LanguageId, String>) -> Self {
         Self(localizations)
     }

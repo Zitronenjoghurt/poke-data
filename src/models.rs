@@ -1,7 +1,10 @@
 pub mod ability;
 pub mod berry;
 pub mod berry_firmness;
+pub mod berry_flavor;
 pub mod color;
+pub mod contest_effect;
+pub mod contest_type;
 pub mod damage_class;
 pub mod egg_group;
 pub mod encounter;
@@ -31,5 +34,6 @@ pub mod pokemon_type_efficacies;
 pub mod region;
 pub mod shape;
 pub mod species;
+pub mod super_contest_effect;
 pub mod version;
 pub mod version_group;

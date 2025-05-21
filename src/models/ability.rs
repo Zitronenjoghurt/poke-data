@@ -4,7 +4,7 @@ use crate::models::flavor_texts::FlavorTexts;
 use crate::models::generation::{Generation, GenerationId};
 use crate::models::language::LanguageId;
 use crate::models::localized_effects::LocalizedEffects;
-use crate::models::localized_names::LocalizedNames;
+use crate::models::localized_names::LocalizedStrings;
 use crate::models::version_group::VersionGroupId;
 use crate::traits::has_identifier::HasIdentifier;
 use crate::traits::has_localized_names::HasLocalizedNames;
@@ -18,7 +18,7 @@ pub type AbilityId = u16;
 pub struct Ability {
     pub id: AbilityId,
     pub identifier: String,
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
     pub flavor_texts: FlavorTexts,
     pub effects: LocalizedEffects,
     pub changelog: AbilityChangelog,
@@ -45,7 +45,7 @@ pub struct AbilityChangelogEntry {
 pub struct UnlinkedAbility {
     pub id: AbilityId,
     pub identifier: String,
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
     pub flavor_texts: FlavorTexts,
     pub effects: LocalizedEffects,
     pub changelog: AbilityChangelog,
@@ -90,7 +90,7 @@ impl HasIdentifier for Ability {
 }
 
 impl HasLocalizedNames for Ability {
-    fn localized_names(&self) -> &LocalizedNames {
+    fn localized_names(&self) -> &LocalizedStrings {
         &self.names
     }
 }

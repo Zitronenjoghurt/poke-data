@@ -1,4 +1,5 @@
 use crate::models::poke_api::PokeApiModel;
+use crate::traits::get_model::GetModel;
 use crate::traits::has_id::HasId;
 use crate::traits::into_model::IntoModel;
 use crate::RawData;
@@ -34,7 +35,7 @@ impl HasId for BerryData {
 }
 
 impl IntoModel<UnlinkedBerry> for BerryData {
-    fn into_model(self, _data: &RawData) -> UnlinkedBerry {
+    fn into_model(self, data: &RawData) -> UnlinkedBerry {
         UnlinkedBerry {
             id: self.id,
             item_id: self.item_id,
@@ -44,6 +45,7 @@ impl IntoModel<UnlinkedBerry> for BerryData {
             growth_time: self.growth_time,
             soil_dryness: self.soil_dryness,
             smoothness: self.smoothness,
+            flavors: data.berry_flavors.get_model(&self.id, data),
         }
     }
 }

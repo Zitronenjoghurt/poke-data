@@ -2,7 +2,7 @@ use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
 use crate::models::damage_class::{DamageClass, DamageClassId};
 use crate::models::generation::{Generation, GenerationId};
-use crate::models::localized_names::LocalizedNames;
+use crate::models::localized_names::LocalizedStrings;
 use crate::types::pokemon_type::Type;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -19,7 +19,7 @@ pub struct PokemonType {
     /// The enum value of this Pokémon type; can be used for easier identification
     pub type_enum: Type,
     /// Names in different languages (availability might differ between objects)
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
     /// The generation this type was introduced in
     pub generation: Arc<Generation>,
     /// The type-based physical/special split ended in Generation 4
@@ -41,7 +41,7 @@ impl PokemonTypeGameIndices {
 pub struct UnlinkedPokemonType {
     pub id: PokemonTypeId,
     pub identifier: String,
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
     pub generation_id: GenerationId,
     pub damage_class_id: Option<DamageClassId>,
     pub game_indices: PokemonTypeGameIndices,

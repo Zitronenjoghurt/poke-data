@@ -1,4 +1,4 @@
-use crate::models::localized_names::LocalizedNames;
+use crate::models::localized_names::LocalizedStrings;
 use serde::{Deserialize, Serialize};
 
 pub type HabitatId = u16;
@@ -7,5 +7,5 @@ pub type HabitatId = u16;
 pub struct Habitat {
     pub id: HabitatId,
     pub identifier: String,
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
 }

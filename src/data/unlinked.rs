@@ -5,7 +5,10 @@ use crate::data::PokeData;
 use crate::models::ability::{AbilityId, UnlinkedAbility};
 use crate::models::berry::{BerryId, UnlinkedBerry};
 use crate::models::berry_firmness::{BerryFirmness, BerryFirmnessId};
+use crate::models::berry_flavor::{BerryFlavor, BerryFlavorId};
 use crate::models::color::{Color, ColorId};
+use crate::models::contest_effect::{ContestEffect, ContestEffectId};
+use crate::models::contest_type::{ContestType, ContestTypeId};
 use crate::models::damage_class::{DamageClass, DamageClassId};
 use crate::models::egg_group::{EggGroup, EggGroupId};
 use crate::models::encounter::{EncounterId, UnlinkedEncounter};
@@ -33,6 +36,7 @@ use crate::models::pokemon_type_efficacies::{
 use crate::models::region::{Region, RegionId};
 use crate::models::shape::{Shape, ShapeId};
 use crate::models::species::{SpeciesId, UnlinkedSpecies};
+use crate::models::super_contest_effect::{SuperContestEffect, SuperContestEffectId};
 use crate::models::version::{UnlinkedVersion, VersionId};
 use crate::models::version_group::{UnlinkedVersionGroup, VersionGroupId};
 use crate::traits::into_arc_map::IntoArcMap;
@@ -47,7 +51,10 @@ pub struct UnlinkedPokeData {
     pub abilities: HashMap<AbilityId, UnlinkedAbility>,
     pub berries: HashMap<BerryId, UnlinkedBerry>,
     pub berry_firmnesses: HashMap<BerryFirmnessId, BerryFirmness>,
+    pub berry_flavors: HashMap<BerryFlavorId, BerryFlavor>,
     pub colors: HashMap<ColorId, Color>,
+    pub contest_effects: HashMap<ContestEffectId, ContestEffect>,
+    pub contest_types: HashMap<ContestTypeId, ContestType>,
     pub damage_classes: HashMap<DamageClassId, DamageClass>,
     pub encounters: HashMap<EncounterId, UnlinkedEncounter>,
     pub encounter_conditions: HashMap<EncounterConditionId, EncounterCondition>,
@@ -73,6 +80,7 @@ pub struct UnlinkedPokeData {
     pub regions: HashMap<RegionId, Region>,
     pub shapes: HashMap<ShapeId, Shape>,
     pub species: HashMap<SpeciesId, UnlinkedSpecies>,
+    pub super_contest_effects: HashMap<SuperContestEffectId, SuperContestEffect>,
     pub versions: HashMap<VersionId, UnlinkedVersion>,
     pub version_groups: HashMap<VersionGroupId, UnlinkedVersionGroup>,
 }
@@ -93,7 +101,10 @@ impl UnlinkedPokeData {
     pub fn initialize(&self) -> PokeData {
         let mut context = LinkContext::default();
         context.berry_firmnesses = self.berry_firmnesses.clone().into_arc_map();
+        context.berry_flavors = self.berry_flavors.clone().into_arc_map();
         context.colors = self.colors.clone().into_arc_map();
+        context.contest_effects = self.contest_effects.clone().into_arc_map();
+        context.contest_types = self.contest_types.clone().into_arc_map();
         context.damage_classes = self.damage_classes.clone().into_arc_map();
         context.encounter_conditions = self.encounter_conditions.clone().into_arc_map();
         context.encounter_methods = self.encounter_methods.clone().into_arc_map();
@@ -106,6 +117,7 @@ impl UnlinkedPokeData {
         context.item_pockets = self.item_pockets.clone().into_arc_map();
         context.regions = self.regions.clone().into_arc_map();
         context.shapes = self.shapes.clone().into_arc_map();
+        context.super_contest_effects = self.super_contest_effects.clone().into_arc_map();
         context.pokemon_type_efficacies =
             PokemonTypeEfficaciesCollection::build_from_unlinked(self);
 

@@ -1,6 +1,6 @@
 use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
-use crate::models::localized_names::LocalizedNames;
+use crate::models::localized_names::LocalizedStrings;
 use crate::models::version_group::{VersionGroup, VersionGroupId};
 use crate::traits::has_identifier::HasIdentifier;
 use crate::traits::has_localized_names::HasLocalizedNames;
@@ -13,7 +13,7 @@ pub type VersionId = u16;
 pub struct Version {
     pub id: VersionId,
     pub identifier: String,
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
     pub version_group: Arc<VersionGroup>,
 }
 
@@ -21,7 +21,7 @@ pub struct Version {
 pub struct UnlinkedVersion {
     pub id: VersionId,
     pub identifier: String,
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
     pub version_group_id: VersionGroupId,
 }
 
@@ -52,7 +52,7 @@ impl Linkable for UnlinkedVersion {
 }
 
 impl HasLocalizedNames for Version {
-    fn localized_names(&self) -> &LocalizedNames {
+    fn localized_names(&self) -> &LocalizedStrings {
         &self.names
     }
 }

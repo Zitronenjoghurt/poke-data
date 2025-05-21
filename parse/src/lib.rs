@@ -7,6 +7,11 @@ use crate::models::poke_api::ability_prose::AbilityProseData;
 use crate::models::poke_api::berries::BerryData;
 use crate::models::poke_api::berry_firmness::BerryFirmnessData;
 use crate::models::poke_api::berry_firmness_names::BerryFirmnessNameData;
+use crate::models::poke_api::berry_flavors::BerryFlavorData;
+use crate::models::poke_api::contest_effect_prose::ContestEffectProseData;
+use crate::models::poke_api::contest_effects::ContestEffectData;
+use crate::models::poke_api::contest_type_names::ContestTypeNameData;
+use crate::models::poke_api::contest_types::ContestTypeData;
 use crate::models::poke_api::egg_group::EggGroupData;
 use crate::models::poke_api::egg_group_prose::EggGroupProseData;
 use crate::models::poke_api::encounter::EncounterData;
@@ -70,6 +75,8 @@ use crate::models::poke_api::pokemon_types_map::PokemonTypeMapData;
 use crate::models::poke_api::pokemon_types_past_map::PokemonTypePastMapData;
 use crate::models::poke_api::region::RegionData;
 use crate::models::poke_api::region_names::RegionNameData;
+use crate::models::poke_api::super_contest_effect_prose::SuperContestEffectProseData;
+use crate::models::poke_api::super_contest_effects::SuperContestEffectData;
 use crate::models::poke_api::version_group_pokemon_move_methods::VersionGroupMoveMethodData;
 use crate::models::poke_api::version_group_regions::VersionGroupRegionData;
 use crate::models::poke_api::version_groups::VersionGroupData;
@@ -82,7 +89,10 @@ use poke_data::data::unlinked::UnlinkedPokeData;
 use poke_data::models::ability::AbilityId;
 use poke_data::models::berry::BerryId;
 use poke_data::models::berry_firmness::BerryFirmnessId;
+use poke_data::models::berry_flavor::{BerryFlavor, BerryFlavorId};
 use poke_data::models::color::ColorId;
+use poke_data::models::contest_effect::ContestEffectId;
+use poke_data::models::contest_type::ContestTypeId;
 use poke_data::models::damage_class::DamageClassId;
 use poke_data::models::egg_group::EggGroupId;
 use poke_data::models::encounter::EncounterId;
@@ -98,6 +108,7 @@ use poke_data::models::item_category::ItemCategoryId;
 use poke_data::models::item_flag::ItemFlagId;
 use poke_data::models::item_fling_effect::ItemFlingEffectId;
 use poke_data::models::item_pocket::ItemPocketId;
+use poke_data::models::localized_names::LocalizedStrings;
 use poke_data::models::location::LocationId;
 use poke_data::models::location_area::LocationAreaId;
 use poke_data::models::pokemon::PokemonId;
@@ -105,6 +116,7 @@ use poke_data::models::pokemon_type::PokemonTypeId;
 use poke_data::models::region::RegionId;
 use poke_data::models::shape::ShapeId;
 use poke_data::models::species::SpeciesId;
+use poke_data::models::super_contest_effect::SuperContestEffectId;
 use poke_data::models::version::VersionId;
 use poke_data::models::version_group::VersionGroupId;
 use std::collections::HashMap;
@@ -125,8 +137,13 @@ pub struct RawData {
     pub berries: HashMap<BerryId, BerryData>,
     pub berry_firmnesses: HashMap<BerryFirmnessId, BerryFirmnessData>,
     pub berry_firmness_names: HashMap<BerryFirmnessId, Vec<BerryFirmnessNameData>>,
+    pub berry_flavors: HashMap<BerryId, Vec<BerryFlavorData>>,
     pub colors: HashMap<ColorId, ColorData>,
     pub color_names: HashMap<ColorId, Vec<ColorNameData>>,
+    pub contest_effects: HashMap<ContestEffectId, ContestEffectData>,
+    pub contest_effect_prose: HashMap<ContestEffectId, Vec<ContestEffectProseData>>,
+    pub contest_types: HashMap<ContestTypeId, ContestTypeData>,
+    pub contest_type_names: HashMap<ContestTypeId, Vec<ContestTypeNameData>>,
     pub damage_classes: HashMap<DamageClassId, DamageClassData>,
     pub damage_class_prose: HashMap<DamageClassId, Vec<DamageClassProseData>>,
     pub encounters: HashMap<EncounterId, EncounterData>,
@@ -187,6 +204,8 @@ pub struct RawData {
     pub shape_prose: HashMap<ShapeId, Vec<ShapeProseData>>,
     pub species: HashMap<SpeciesId, PokemonSpeciesData>,
     pub species_names: HashMap<SpeciesId, Vec<PokemonSpeciesNameData>>,
+    pub super_contest_effects: HashMap<SuperContestEffectId, SuperContestEffectData>,
+    pub super_contest_effect_prose: HashMap<SuperContestEffectId, Vec<SuperContestEffectProseData>>,
     pub version_groups: HashMap<VersionGroupId, VersionGroupData>,
     pub version_group_move_methods: HashMap<VersionGroupId, Vec<VersionGroupMoveMethodData>>,
     pub version_group_regions: HashMap<VersionGroupId, Vec<VersionGroupRegionData>>,
@@ -218,8 +237,19 @@ impl RawData {
             berry_firmness_names: BerryFirmnessNameData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
+            berry_flavors: BerryFlavorData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             colors: ColorData::load(base_path).await?.into_id_map(),
             color_names: ColorNameData::load(base_path).await?.into_id_map_grouped(),
+            contest_effects: ContestEffectData::load(base_path).await?.into_id_map(),
+            contest_effect_prose: ContestEffectProseData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            contest_types: ContestTypeData::load(base_path).await?.into_id_map(),
+            contest_type_names: ContestTypeNameData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             damage_classes: DamageClassData::load(base_path).await?.into_id_map(),
             damage_class_prose: DamageClassProseData::load(base_path)
                 .await?
@@ -337,6 +367,10 @@ impl RawData {
             species_names: PokemonSpeciesNameData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
+            super_contest_effects: SuperContestEffectData::load(base_path).await?.into_id_map(),
+            super_contest_effect_prose: SuperContestEffectProseData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             version_groups: VersionGroupData::load(base_path).await?.into_id_map(),
             version_group_move_methods: VersionGroupMoveMethodData::load(base_path)
                 .await?
@@ -356,7 +390,10 @@ impl RawData {
             abilities: self.abilities.clone().into_model(self),
             berries: self.berries.clone().into_model(self),
             berry_firmnesses: self.berry_firmnesses.clone().into_model(self),
+            berry_flavors: self.parse_berry_flavors(),
             colors: self.colors.clone().into_model(self),
+            contest_effects: self.contest_effects.clone().into_model(self),
+            contest_types: Default::default(),
             damage_classes: self.damage_classes.clone().into_model(self),
             encounters: self.encounters.clone().into_model(self),
             encounter_conditions: self.encounter_conditions.clone().into_model(self),
@@ -386,6 +423,21 @@ impl RawData {
             species: self.species.clone().into_model(self),
             version_groups: self.version_groups.clone().into_model(self),
             versions: self.versions.clone().into_model(self),
+            super_contest_effects: self.super_contest_effects.clone().into_model(self),
         }
+    }
+
+    fn parse_berry_flavors(&self) -> HashMap<BerryFlavorId, BerryFlavor> {
+        self.contest_type_names
+            .iter()
+            .map(|(id, name_data)| {
+                let localizations = name_data
+                    .iter()
+                    .map(|data| (data.local_language_id, data.flavor.clone()))
+                    .collect();
+                let names = LocalizedStrings::new(localizations);
+                (*id, BerryFlavor { id: *id, names })
+            })
+            .collect()
     }
 }

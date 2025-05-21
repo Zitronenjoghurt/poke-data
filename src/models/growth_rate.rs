@@ -1,4 +1,4 @@
-use crate::models::localized_names::LocalizedNames;
+use crate::models::localized_names::LocalizedStrings;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -9,7 +9,7 @@ pub struct GrowthRate {
     pub id: GrowthRateId,
     pub identifier: String,
     pub formula: String,
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
     pub experience: GrowthRateExperience,
 }
 

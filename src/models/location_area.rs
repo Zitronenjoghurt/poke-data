@@ -2,7 +2,7 @@ use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
 use crate::models::encounter::Encounter;
 use crate::models::encounter_method::EncounterMethodId;
-use crate::models::localized_names::LocalizedNames;
+use crate::models::localized_names::LocalizedStrings;
 use crate::models::location::{Location, LocationId};
 use crate::models::version::VersionId;
 use crate::traits::has_localized_names::HasLocalizedNames;
@@ -16,7 +16,7 @@ pub type LocationAreaId = u16;
 pub struct LocationArea {
     pub id: LocationAreaId,
     pub identifier: Option<String>,
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
     pub location: Arc<Location>,
     pub game_index: u16,
     pub encounter_rates: LocationAreaEncounterRates,
@@ -43,7 +43,7 @@ pub struct LocationAreaEncounterRate {
 pub struct UnlinkedLocationArea {
     pub id: LocationAreaId,
     pub identifier: Option<String>,
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
     pub location_id: LocationId,
     pub game_index: u16,
     pub encounter_rates: LocationAreaEncounterRates,
@@ -101,7 +101,7 @@ impl Linkable for UnlinkedLocationArea {
 }
 
 impl HasLocalizedNames for LocationArea {
-    fn localized_names(&self) -> &LocalizedNames {
+    fn localized_names(&self) -> &LocalizedStrings {
         &self.names
     }
 }

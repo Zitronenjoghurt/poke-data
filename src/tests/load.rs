@@ -28,6 +28,11 @@ fn test_berry() {
     assert_eq!(cheri.growth_time, 3);
     assert_eq!(cheri.soil_dryness, 15);
     assert_eq!(cheri.smoothness, 25);
+    assert_eq!(cheri.flavors.len(), 1);
+
+    let (flavor, flavor_amount) = &cheri.flavors[0];
+    assert_eq!(flavor.names.get_by_language(Language::English), "Spicy");
+    assert_eq!(*flavor_amount, 10);
 }
 
 #[test]

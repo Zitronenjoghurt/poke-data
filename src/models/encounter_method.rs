@@ -1,4 +1,4 @@
-use crate::models::localized_names::LocalizedNames;
+use crate::models::localized_names::LocalizedStrings;
 use serde::{Deserialize, Serialize};
 
 pub type EncounterMethodId = u8;
@@ -7,6 +7,6 @@ pub type EncounterMethodId = u8;
 pub struct EncounterMethod {
     pub id: EncounterMethodId,
     pub identifier: String,
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
     pub order: u8,
 }

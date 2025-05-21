@@ -5,7 +5,7 @@ use crate::models::generation::{Generation, GenerationId};
 use crate::models::growth_rate::{GrowthRate, GrowthRateId};
 use crate::models::habitat::{Habitat, HabitatId};
 use crate::models::item::{Item, ItemId};
-use crate::models::localized_names::LocalizedNames;
+use crate::models::localized_names::LocalizedStrings;
 use crate::models::shape::{Shape, ShapeId};
 use crate::traits::has_identifier::HasIdentifier;
 use crate::traits::has_localized_names::HasLocalizedNames;
@@ -20,7 +20,7 @@ pub type SpeciesId = u16;
 pub struct Species {
     pub id: SpeciesId,
     pub identifier: String,
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
     pub generation: Arc<Generation>,
     pub evolves_from_species_id: Option<SpeciesId>,
     pub baby_trigger_item: Option<Arc<Item>>,
@@ -44,7 +44,7 @@ pub struct Species {
 pub struct UnlinkedSpecies {
     pub id: SpeciesId,
     pub identifier: String,
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
     pub generation_id: GenerationId,
     pub evolves_from_species_id: Option<SpeciesId>,
     pub baby_trigger_item_id: Option<ItemId>,
@@ -167,7 +167,7 @@ impl HasIdentifier for Species {
 }
 
 impl HasLocalizedNames for Species {
-    fn localized_names(&self) -> &LocalizedNames {
+    fn localized_names(&self) -> &LocalizedStrings {
         &self.names
     }
 }

@@ -1,7 +1,7 @@
 use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
 use crate::models::encounter_condition::{EncounterCondition, EncounterConditionId};
-use crate::models::localized_names::LocalizedNames;
+use crate::models::localized_names::LocalizedStrings;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
@@ -11,7 +11,7 @@ pub type EncounterConditionValueId = u16;
 pub struct EncounterConditionValue {
     pub id: EncounterConditionValueId,
     pub identifier: String,
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
     pub is_default: bool,
     pub encounter_condition: Arc<EncounterCondition>,
 }
@@ -20,7 +20,7 @@ pub struct EncounterConditionValue {
 pub struct UnlinkedEncounterConditionValue {
     pub id: EncounterConditionValueId,
     pub identifier: String,
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
     pub is_default: bool,
     pub encounter_condition_id: EncounterConditionId,
 }

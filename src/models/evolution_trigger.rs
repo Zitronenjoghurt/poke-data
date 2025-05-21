@@ -1,4 +1,4 @@
-use crate::models::localized_names::LocalizedNames;
+use crate::models::localized_names::LocalizedStrings;
 use serde::{Deserialize, Serialize};
 
 pub type EvolutionTriggerId = u8;
@@ -7,5 +7,5 @@ pub type EvolutionTriggerId = u8;
 pub struct EvolutionTrigger {
     pub id: EvolutionTriggerId,
     pub identifier: String,
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
 }

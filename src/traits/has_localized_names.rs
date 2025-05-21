@@ -1,9 +1,9 @@
-use crate::models::localized_names::LocalizedNames;
+use crate::models::localized_names::LocalizedStrings;
 use std::collections::HashMap;
 use std::sync::Arc;
 
 pub trait HasLocalizedNames {
-    fn localized_names(&self) -> &LocalizedNames;
+    fn localized_names(&self) -> &LocalizedStrings;
 }
 
 pub trait LocalizedNamesDictionary<K, V> {

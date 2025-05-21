@@ -6,7 +6,7 @@ use crate::models::item_category::{ItemCategory, ItemCategoryId};
 use crate::models::item_flag::{ItemFlag, ItemFlagId};
 use crate::models::item_fling_effect::{ItemFlingEffect, ItemFlingEffectId};
 use crate::models::localized_effects::LocalizedEffects;
-use crate::models::localized_names::LocalizedNames;
+use crate::models::localized_names::LocalizedStrings;
 use crate::traits::has_identifier::HasIdentifier;
 use crate::traits::has_localized_names::HasLocalizedNames;
 use serde::{Deserialize, Serialize};
@@ -19,7 +19,7 @@ pub type ItemId = u16;
 pub struct Item {
     pub id: ItemId,
     pub identifier: String,
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
     pub flavor_texts: FlavorTexts,
     pub effects: LocalizedEffects,
     pub category: Arc<ItemCategory>,
@@ -43,7 +43,7 @@ impl ItemGameIndices {
 pub struct UnlinkedItem {
     pub id: ItemId,
     pub identifier: String,
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
     pub flavor_texts: FlavorTexts,
     pub effects: LocalizedEffects,
     pub category_id: ItemCategoryId,
@@ -115,7 +115,7 @@ impl Linkable for UnlinkedItem {
 }
 
 impl HasLocalizedNames for Item {
-    fn localized_names(&self) -> &LocalizedNames {
+    fn localized_names(&self) -> &LocalizedStrings {
         &self.names
     }
 }

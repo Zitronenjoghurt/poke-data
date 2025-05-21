@@ -1,6 +1,6 @@
 use crate::models::poke_api::PokeApiModel;
 use crate::traits::has_id::HasId;
-use crate::traits::has_localized_name::HasLocalizedName;
+use crate::traits::has_localized_name::HasLocalizedString;
 use poke_data::models::generation::GenerationId;
 use poke_data::models::language::LanguageId;
 use serde::{Deserialize, Serialize};
@@ -26,12 +26,12 @@ impl HasId for GenerationNameData {
     }
 }
 
-impl HasLocalizedName for GenerationNameData {
+impl HasLocalizedString for GenerationNameData {
     fn language(&self) -> LanguageId {
         self.local_language_id
     }
 
-    fn name(&self) -> String {
+    fn string(&self) -> String {
         self.name.clone()
     }
 }

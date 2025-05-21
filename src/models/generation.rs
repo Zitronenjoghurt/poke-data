@@ -1,6 +1,6 @@
 use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
-use crate::models::localized_names::LocalizedNames;
+use crate::models::localized_names::LocalizedStrings;
 use crate::models::region::{Region, RegionId};
 use crate::traits::has_identifier::HasIdentifier;
 use crate::traits::has_localized_names::HasLocalizedNames;
@@ -14,7 +14,7 @@ pub struct Generation {
     pub id: GenerationId,
     pub identifier: String,
     pub main_region: Arc<Region>,
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -22,7 +22,7 @@ pub struct UnlinkedGeneration {
     pub id: GenerationId,
     pub identifier: String,
     pub main_region_id: RegionId,
-    pub names: LocalizedNames,
+    pub names: LocalizedStrings,
 }
 
 impl Linkable for UnlinkedGeneration {
@@ -52,7 +52,7 @@ impl Linkable for UnlinkedGeneration {
 }
 
 impl HasLocalizedNames for Generation {
-    fn localized_names(&self) -> &LocalizedNames {
+    fn localized_names(&self) -> &LocalizedStrings {
         &self.names
     }
 }
