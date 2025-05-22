@@ -3,6 +3,7 @@ use crate::data::linkable::Linkable;
 use crate::models::encounter::Encounter;
 use crate::models::generation::GenerationId;
 use crate::models::pokemon::ability::{PokemonAbility, UnlinkedPokemonAbility};
+use crate::models::pokemon::moveset::{Moveset, UnlinkedMoveset};
 use crate::models::species::{Species, SpeciesId};
 use crate::models::version::VersionId;
 use crate::traits::has_identifier::HasIdentifier;
@@ -13,6 +14,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 
 pub mod ability;
+pub mod moveset;
 
 pub type PokemonId = u16;
 
@@ -33,6 +35,7 @@ pub struct Pokemon {
     pub order: Option<u16>,
     pub is_default: bool,
     pub abilities: Vec<PokemonAbility>,
+    pub moveset: Moveset,
     pub encounters: HashMap<VersionId, Vec<Arc<Encounter>>>,
 }
 
@@ -68,6 +71,7 @@ pub struct UnlinkedPokemon {
     pub order: Option<u16>,
     pub is_default: bool,
     pub abilities: Vec<UnlinkedPokemonAbility>,
+    pub moveset: UnlinkedMoveset,
 }
 
 impl Linkable for UnlinkedPokemon {
@@ -86,6 +90,7 @@ impl Linkable for UnlinkedPokemon {
             .clone();
 
         let abilities = self.abilities.link(context);
+        let moveset = self.moveset.link(context);
 
         let relevant_encounters: Vec<Arc<Encounter>> = context
             .encounters
@@ -122,6 +127,7 @@ impl Linkable for UnlinkedPokemon {
             order: self.order,
             is_default: self.is_default,
             abilities,
+            moveset,
             encounters,
         };
 

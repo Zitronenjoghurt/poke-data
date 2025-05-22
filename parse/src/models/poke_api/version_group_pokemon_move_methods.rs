@@ -2,14 +2,14 @@ use crate::models::poke_api::PokeApiModel;
 use crate::traits::has_id::HasId;
 use crate::traits::into_model::IntoModel;
 use crate::RawData;
-use poke_data::models::move_method::MoveMethodId;
+use poke_data::models::pokemon_move_method::PokemonMoveMethodId;
 use poke_data::models::version_group::VersionGroupId;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct VersionGroupMoveMethodData {
     pub version_group_id: VersionGroupId,
-    pub pokemon_move_method_id: MoveMethodId,
+    pub pokemon_move_method_id: PokemonMoveMethodId,
 }
 
 impl PokeApiModel for VersionGroupMoveMethodData {
@@ -26,8 +26,8 @@ impl HasId for VersionGroupMoveMethodData {
     }
 }
 
-impl IntoModel<Vec<MoveMethodId>> for Vec<VersionGroupMoveMethodData> {
-    fn into_model(self, _data: &RawData) -> Vec<MoveMethodId> {
+impl IntoModel<Vec<PokemonMoveMethodId>> for Vec<VersionGroupMoveMethodData> {
+    fn into_model(self, _data: &RawData) -> Vec<PokemonMoveMethodId> {
         self.into_iter().map(|v| v.pokemon_move_method_id).collect()
     }
 }

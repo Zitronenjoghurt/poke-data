@@ -72,6 +72,8 @@ use crate::models::poke_api::move_flags::MoveFlagData;
 use crate::models::poke_api::move_flavor_texts::MoveFlavorTextData;
 use crate::models::poke_api::move_meta::MoveMetaData;
 use crate::models::poke_api::move_meta_stat_changes::MoveMetaStatChangeData;
+use crate::models::poke_api::move_method_prose::MoveMethodProseData;
+use crate::models::poke_api::move_methods::MoveMethodData;
 use crate::models::poke_api::move_names::MoveNameData;
 use crate::models::poke_api::move_target_prose::MoveTargetProseData;
 use crate::models::poke_api::move_targets::MoveTargetData;
@@ -82,6 +84,7 @@ use crate::models::poke_api::pokemon_color_names::ColorNameData;
 use crate::models::poke_api::pokemon_colors::ColorData;
 use crate::models::poke_api::pokemon_habitat_names::HabitatNameData;
 use crate::models::poke_api::pokemon_habitats::HabitatData;
+use crate::models::poke_api::pokemon_move_map::PokemonMoveMapData;
 use crate::models::poke_api::pokemon_shape_prose::ShapeProseData;
 use crate::models::poke_api::pokemon_shapes::ShapeData;
 use crate::models::poke_api::pokemon_species::PokemonSpeciesData;
@@ -138,6 +141,7 @@ use poke_data::models::pokemon_move_ailment::PokemonMoveAilmentId;
 use poke_data::models::pokemon_move_category::PokemonMoveCategoryId;
 use poke_data::models::pokemon_move_effect::PokemonMoveEffectId;
 use poke_data::models::pokemon_move_flag::PokemonMoveFlagId;
+use poke_data::models::pokemon_move_method::PokemonMoveMethodId;
 use poke_data::models::pokemon_move_target::PokemonMoveTargetId;
 use poke_data::models::pokemon_type::PokemonTypeId;
 use poke_data::models::region::RegionId;
@@ -233,9 +237,12 @@ pub struct RawData {
         HashMap<MoveEffectChangelogId, Vec<MoveEffectChangelogProseData>>,
     pub move_flags: HashMap<PokemonMoveFlagId, MoveFlagData>,
     pub move_flag_prose: HashMap<PokemonMoveFlagId, Vec<MoveFlagProseData>>,
+    pub move_methods: HashMap<PokemonMoveMethodId, MoveMethodData>,
+    pub move_method_prose: HashMap<PokemonMoveMethodId, Vec<MoveMethodProseData>>,
     pub move_targets: HashMap<PokemonMoveTargetId, MoveTargetData>,
     pub move_target_prose: HashMap<PokemonMoveTargetId, Vec<MoveTargetProseData>>,
     pub pokemon: HashMap<PokemonId, PokemonData>,
+    pub pokemon_move_map: HashMap<PokemonId, Vec<PokemonMoveMapData>>,
     pub pokemon_stats: HashMap<PokemonId, Vec<PokemonStatData>>,
     pub pokemon_types: HashMap<PokemonTypeId, PokemonTypeData>,
     pub pokemon_types_map: HashMap<PokemonId, Vec<PokemonTypeMapData>>,
@@ -421,12 +428,19 @@ impl RawData {
             move_flag_prose: MoveFlagProseData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
+            move_methods: MoveMethodData::load(base_path).await?.into_id_map(),
+            move_method_prose: MoveMethodProseData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             move_targets: MoveTargetData::load(base_path).await?.into_id_map(),
             move_target_prose: MoveTargetProseData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
             pokemon: PokemonData::load(base_path).await?.into_id_map(),
             pokemon_abilities: PokemonAbilityData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            pokemon_move_map: PokemonMoveMapData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
             pokemon_stats: PokemonStatData::load(base_path)
@@ -504,6 +518,7 @@ impl RawData {
             move_categories: self.move_categories.clone().into_model(self),
             move_effects: self.move_effects.clone().into_model(self),
             move_flags: self.move_flags.clone().into_model(self),
+            move_methods: self.move_methods.clone().into_model(self),
             move_targets: self.move_targets.clone().into_model(self),
             pokemon: self.pokemon.clone().into_model(self),
             pokemon_types: self.pokemon_types.clone().into_model(self),

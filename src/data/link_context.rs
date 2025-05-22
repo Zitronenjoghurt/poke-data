@@ -46,6 +46,7 @@ use crate::models::pokemon_move_ailment::{PokemonMoveAilment, PokemonMoveAilment
 use crate::models::pokemon_move_category::{PokemonMoveCategory, PokemonMoveCategoryId};
 use crate::models::pokemon_move_effect::{PokemonMoveEffect, PokemonMoveEffectId};
 use crate::models::pokemon_move_flag::{PokemonMoveFlag, PokemonMoveFlagId};
+use crate::models::pokemon_move_method::{PokemonMoveMethod, PokemonMoveMethodId};
 use crate::models::pokemon_move_target::{PokemonMoveTarget, PokemonMoveTargetId};
 use crate::models::pokemon_type::{PokemonType, PokemonTypeId};
 use crate::models::region::{Region, RegionId};
@@ -89,6 +90,7 @@ pub struct LinkContext {
     pub move_categories: HashMap<PokemonMoveCategoryId, Arc<PokemonMoveCategory>>,
     pub move_effects: HashMap<PokemonMoveEffectId, Arc<PokemonMoveEffect>>,
     pub move_flags: HashMap<PokemonMoveFlagId, Arc<PokemonMoveFlag>>,
+    pub move_methods: HashMap<PokemonMoveMethodId, Arc<PokemonMoveMethod>>,
     pub move_targets: HashMap<PokemonMoveTargetId, Arc<PokemonMoveTarget>>,
     pub pokemon: HashMap<PokemonId, Arc<Pokemon>>,
     pub pokemon_types: HashMap<PokemonTypeId, Arc<PokemonType>>,

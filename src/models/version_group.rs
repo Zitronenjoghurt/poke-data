@@ -1,7 +1,7 @@
 use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
 use crate::models::generation::{Generation, GenerationId};
-use crate::models::move_method::MoveMethodId;
+use crate::models::pokemon_move_method::PokemonMoveMethodId;
 use crate::models::region::{Region, RegionId};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
@@ -14,7 +14,7 @@ pub struct VersionGroup {
     pub identifier: String,
     pub generation: Arc<Generation>,
     pub regions: Vec<Arc<Region>>,
-    pub move_method_ids: Vec<MoveMethodId>,
+    pub move_method_ids: Vec<PokemonMoveMethodId>,
     pub order: u8,
 }
 
@@ -24,7 +24,7 @@ pub struct UnlinkedVersionGroup {
     pub identifier: String,
     pub generation_id: GenerationId,
     pub region_ids: Vec<RegionId>,
-    pub move_method_ids: Vec<MoveMethodId>,
+    pub move_method_ids: Vec<PokemonMoveMethodId>,
     pub order: u8,
 }
 

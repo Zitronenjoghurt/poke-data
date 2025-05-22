@@ -34,6 +34,7 @@ use crate::models::pokemon_move_ailment::{PokemonMoveAilment, PokemonMoveAilment
 use crate::models::pokemon_move_category::{PokemonMoveCategory, PokemonMoveCategoryId};
 use crate::models::pokemon_move_effect::{PokemonMoveEffect, PokemonMoveEffectId};
 use crate::models::pokemon_move_flag::{PokemonMoveFlag, PokemonMoveFlagId};
+use crate::models::pokemon_move_method::{PokemonMoveMethod, PokemonMoveMethodId};
 use crate::models::pokemon_move_target::{PokemonMoveTarget, PokemonMoveTargetId};
 use crate::models::pokemon_type::{PokemonTypeId, UnlinkedPokemonType};
 use crate::models::pokemon_type_efficacies::{
@@ -84,6 +85,7 @@ pub struct UnlinkedPokeData {
     pub move_categories: HashMap<PokemonMoveCategoryId, PokemonMoveCategory>,
     pub move_effects: HashMap<PokemonMoveEffectId, PokemonMoveEffect>,
     pub move_flags: HashMap<PokemonMoveFlagId, PokemonMoveFlag>,
+    pub move_methods: HashMap<PokemonMoveMethodId, PokemonMoveMethod>,
     pub move_targets: HashMap<PokemonMoveTargetId, PokemonMoveTarget>,
     pub pokemon: HashMap<PokemonId, UnlinkedPokemon>,
     pub pokemon_types: HashMap<PokemonTypeId, UnlinkedPokemonType>,
@@ -131,6 +133,7 @@ impl UnlinkedPokeData {
         context.move_categories = self.move_categories.clone().into_arc_map();
         context.move_effects = self.move_effects.clone().into_arc_map();
         context.move_flags = self.move_flags.clone().into_arc_map();
+        context.move_methods = self.move_methods.clone().into_arc_map();
         context.move_targets = self.move_targets.clone().into_arc_map();
         context.regions = self.regions.clone().into_arc_map();
         context.shapes = self.shapes.clone().into_arc_map();
