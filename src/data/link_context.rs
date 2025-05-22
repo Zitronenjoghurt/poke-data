@@ -7,6 +7,7 @@ use crate::collections::items::ItemsCollection;
 use crate::collections::location_areas::LocationAreasCollection;
 use crate::collections::locations::LocationsCollection;
 use crate::collections::moves::MovesCollection;
+use crate::collections::pokedexes::PokedexCollection;
 use crate::collections::pokemon::PokemonCollection;
 use crate::collections::pokemon_type_efficacies::PokemonTypeEfficaciesCollection;
 use crate::collections::regions::RegionsCollection;
@@ -40,6 +41,7 @@ use crate::models::item_fling_effect::{ItemFlingEffect, ItemFlingEffectId};
 use crate::models::item_pocket::{ItemPocket, ItemPocketId};
 use crate::models::location::{Location, LocationId};
 use crate::models::location_area::{LocationArea, LocationAreaId};
+use crate::models::pokedex::{Pokedex, PokedexId};
 use crate::models::pokemon::{Pokemon, PokemonId};
 use crate::models::pokemon_move::{PokemonMove, PokemonMoveId};
 use crate::models::pokemon_move_ailment::{PokemonMoveAilment, PokemonMoveAilmentId};
@@ -92,6 +94,7 @@ pub struct LinkContext {
     pub move_flags: HashMap<PokemonMoveFlagId, Arc<PokemonMoveFlag>>,
     pub move_methods: HashMap<PokemonMoveMethodId, Arc<PokemonMoveMethod>>,
     pub move_targets: HashMap<PokemonMoveTargetId, Arc<PokemonMoveTarget>>,
+    pub pokedexes: HashMap<PokedexId, Arc<Pokedex>>,
     pub pokemon: HashMap<PokemonId, Arc<Pokemon>>,
     pub pokemon_types: HashMap<PokemonTypeId, Arc<PokemonType>>,
     pub pokemon_type_efficacies: PokemonTypeEfficaciesCollection,
@@ -115,6 +118,7 @@ impl LinkContext {
             locations: LocationsCollection::new(&self),
             location_areas: LocationAreasCollection::new(&self),
             moves: MovesCollection::new(&self),
+            pokedexes: PokedexCollection::new(&self),
             pokemon: PokemonCollection::new(&self),
             regions: RegionsCollection::new(&self),
             species: SpeciesCollection::new(&self),

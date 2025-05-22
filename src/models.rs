@@ -27,6 +27,7 @@ pub mod localized_name_descriptions;
 pub mod localized_names;
 pub mod location;
 pub mod location_area;
+pub mod pokedex;
 pub mod pokemon;
 pub mod pokemon_move;
 pub mod pokemon_move_ailment;

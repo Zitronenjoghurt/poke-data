@@ -28,6 +28,7 @@ use crate::models::item_fling_effect::{ItemFlingEffect, ItemFlingEffectId};
 use crate::models::item_pocket::{ItemPocket, ItemPocketId};
 use crate::models::location::{LocationId, UnlinkedLocation};
 use crate::models::location_area::{LocationAreaId, UnlinkedLocationArea};
+use crate::models::pokedex::{PokedexId, UnlinkedPokedex};
 use crate::models::pokemon::{PokemonId, UnlinkedPokemon};
 use crate::models::pokemon_move::{PokemonMoveId, UnlinkedPokemonMove};
 use crate::models::pokemon_move_ailment::{PokemonMoveAilment, PokemonMoveAilmentId};
@@ -87,6 +88,7 @@ pub struct UnlinkedPokeData {
     pub move_flags: HashMap<PokemonMoveFlagId, PokemonMoveFlag>,
     pub move_methods: HashMap<PokemonMoveMethodId, PokemonMoveMethod>,
     pub move_targets: HashMap<PokemonMoveTargetId, PokemonMoveTarget>,
+    pub pokedexes: HashMap<PokedexId, UnlinkedPokedex>,
     pub pokemon: HashMap<PokemonId, UnlinkedPokemon>,
     pub pokemon_types: HashMap<PokemonTypeId, UnlinkedPokemonType>,
     pub pokemon_type_efficacies: PokemonTypeEfficacies,
@@ -166,6 +168,8 @@ impl UnlinkedPokeData {
         context.species = self.species.link(&context);
 
         context.pokemon = self.pokemon.link(&context);
+
+        context.pokedexes = self.pokedexes.link(&context);
 
         context.build_data()
     }

@@ -7,6 +7,7 @@ pub mod items;
 pub mod location_areas;
 pub mod locations;
 pub mod moves;
+pub mod pokedexes;
 pub mod pokemon;
 pub mod pokemon_type_efficacies;
 pub mod regions;

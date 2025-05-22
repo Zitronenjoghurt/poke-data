@@ -1,4 +1,5 @@
 use crate::models::language::LanguageId;
+use crate::models::localized_names::LocalizedStrings;
 use crate::types::language::Language;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -23,6 +24,19 @@ impl LocalizedNameDescriptions {
         }
 
         None
+    }
+
+    pub fn localizations(&self) -> &HashMap<LanguageId, LocalizedNameDescription> {
+        &self.0
+    }
+
+    pub fn get_names(&self) -> LocalizedStrings {
+        let localizations = self
+            .0
+            .iter()
+            .map(|(k, v)| (k.clone(), v.name.clone()))
+            .collect();
+        LocalizedStrings::new(localizations)
     }
 }
 

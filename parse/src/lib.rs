@@ -78,10 +78,14 @@ use crate::models::poke_api::move_names::MoveNameData;
 use crate::models::poke_api::move_target_prose::MoveTargetProseData;
 use crate::models::poke_api::move_targets::MoveTargetData;
 use crate::models::poke_api::moves::MoveData;
+use crate::models::poke_api::pokedex_prose::PokedexProseData;
+use crate::models::poke_api::pokedex_version_groups::PokedexVersionGroupData;
+use crate::models::poke_api::pokedexes::PokedexData;
 use crate::models::poke_api::pokemon::PokemonData;
 use crate::models::poke_api::pokemon_abilities::PokemonAbilityData;
 use crate::models::poke_api::pokemon_color_names::ColorNameData;
 use crate::models::poke_api::pokemon_colors::ColorData;
+use crate::models::poke_api::pokemon_dex_numbers::PokemonDexNumberData;
 use crate::models::poke_api::pokemon_habitat_names::HabitatNameData;
 use crate::models::poke_api::pokemon_habitats::HabitatData;
 use crate::models::poke_api::pokemon_move_map::PokemonMoveMapData;
@@ -137,6 +141,7 @@ use poke_data::models::item_pocket::ItemPocketId;
 use poke_data::models::localized_names::LocalizedStrings;
 use poke_data::models::location::LocationId;
 use poke_data::models::location_area::LocationAreaId;
+use poke_data::models::pokedex::PokedexId;
 use poke_data::models::pokemon::PokemonId;
 use poke_data::models::pokemon_move::PokemonMoveId;
 use poke_data::models::pokemon_move_ailment::PokemonMoveAilmentId;
@@ -243,6 +248,10 @@ pub struct RawData {
     pub move_method_prose: HashMap<PokemonMoveMethodId, Vec<MoveMethodProseData>>,
     pub move_targets: HashMap<PokemonMoveTargetId, MoveTargetData>,
     pub move_target_prose: HashMap<PokemonMoveTargetId, Vec<MoveTargetProseData>>,
+    pub pokedexes: HashMap<PokedexId, PokedexData>,
+    pub pokedex_prose: HashMap<PokedexId, Vec<PokedexProseData>>,
+    pub pokedex_version_groups: HashMap<PokedexId, Vec<PokedexVersionGroupData>>,
+    pub pokemon_dex_numbers: HashMap<PokedexId, Vec<PokemonDexNumberData>>,
     pub pokemon: HashMap<PokemonId, PokemonData>,
     pub pokemon_move_map: HashMap<PokemonId, Vec<PokemonMoveMapData>>,
     pub pokemon_stats: HashMap<PokemonId, Vec<PokemonStatData>>,
@@ -440,6 +449,16 @@ impl RawData {
             move_target_prose: MoveTargetProseData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
+            pokedexes: PokedexData::load(base_path).await?.into_id_map(),
+            pokedex_prose: PokedexProseData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            pokedex_version_groups: PokedexVersionGroupData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            pokemon_dex_numbers: PokemonDexNumberData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             pokemon: PokemonData::load(base_path).await?.into_id_map(),
             pokemon_abilities: PokemonAbilityData::load(base_path)
                 .await?
@@ -530,6 +549,7 @@ impl RawData {
             move_flags: self.move_flags.clone().into_model(self),
             move_methods: self.move_methods.clone().into_model(self),
             move_targets: self.move_targets.clone().into_model(self),
+            pokedexes: self.pokedexes.clone().into_model(self),
             pokemon: self.pokemon.clone().into_model(self),
             pokemon_types: self.pokemon_types.clone().into_model(self),
             pokemon_type_efficacies: self.pokemon_type_efficacies.clone().into_model(self),

@@ -110,6 +110,15 @@ fn test_move() {
 }
 
 #[test]
+fn test_pokedex() {
+    let data = load_data();
+    let national = data.pokedexes.find_by_name("national", 0.5).unwrap();
+
+    let bulbasaur = national.species_map.get(&1).unwrap();
+    assert_eq!(bulbasaur.identifier, "bulbasaur");
+}
+
+#[test]
 fn test_pokemon() {
     let data = load_data();
     let mareep = data.pokemon.find_by_name("mareeep", 0.5).unwrap();
