@@ -88,7 +88,9 @@ use crate::models::poke_api::pokemon_move_map::PokemonMoveMapData;
 use crate::models::poke_api::pokemon_shape_prose::ShapeProseData;
 use crate::models::poke_api::pokemon_shapes::ShapeData;
 use crate::models::poke_api::pokemon_species::PokemonSpeciesData;
+use crate::models::poke_api::pokemon_species_flavor_texts::PokemonSpeciesFlavorTextData;
 use crate::models::poke_api::pokemon_species_names::PokemonSpeciesNameData;
+use crate::models::poke_api::pokemon_species_prose::PokemonSpeciesProseData;
 use crate::models::poke_api::pokemon_stats::PokemonStatData;
 use crate::models::poke_api::pokemon_type_efficacy::PokemonTypeEfficacyData;
 use crate::models::poke_api::pokemon_type_efficacy_past::PokemonTypeEfficacyPastData;
@@ -257,7 +259,9 @@ pub struct RawData {
     pub shapes: HashMap<ShapeId, ShapeData>,
     pub shape_prose: HashMap<ShapeId, Vec<ShapeProseData>>,
     pub species: HashMap<SpeciesId, PokemonSpeciesData>,
+    pub species_flavor_texts: HashMap<SpeciesId, Vec<PokemonSpeciesFlavorTextData>>,
     pub species_names: HashMap<SpeciesId, Vec<PokemonSpeciesNameData>>,
+    pub species_prose: HashMap<SpeciesId, Vec<PokemonSpeciesProseData>>,
     pub super_contest_effects: HashMap<SuperContestEffectId, SuperContestEffectData>,
     pub super_contest_effect_prose: HashMap<SuperContestEffectId, Vec<SuperContestEffectProseData>>,
     pub version_groups: HashMap<VersionGroupId, VersionGroupData>,
@@ -466,7 +470,13 @@ impl RawData {
             shapes: ShapeData::load(base_path).await?.into_id_map(),
             shape_prose: ShapeProseData::load(base_path).await?.into_id_map_grouped(),
             species: PokemonSpeciesData::load(base_path).await?.into_id_map(),
+            species_flavor_texts: PokemonSpeciesFlavorTextData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             species_names: PokemonSpeciesNameData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            species_prose: PokemonSpeciesProseData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
             super_contest_effects: SuperContestEffectData::load(base_path).await?.into_id_map(),

@@ -63,10 +63,17 @@ impl IntoModel<UnlinkedSpecies> for PokemonSpeciesData {
                 )
             });
 
+        let form_description = data
+            .species_prose
+            .get(&self.id)
+            .map(|descriptions| descriptions.clone().into_model(data));
+
         UnlinkedSpecies {
             id: self.id,
             identifier: self.identifier,
             names: data.species_names.get_model(&self.id, data),
+            flavor_texts: data.species_flavor_texts.get_model(&self.id, data),
+            form_description,
             generation_id: self.generation_id,
             evolves_from_species_id: self.evolves_from_species_id,
             baby_trigger_item_id: evolution_chain.baby_trigger_item_id,

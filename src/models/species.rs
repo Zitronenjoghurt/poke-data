@@ -5,13 +5,17 @@ use crate::models::generation::{Generation, GenerationId};
 use crate::models::growth_rate::{GrowthRate, GrowthRateId};
 use crate::models::habitat::{Habitat, HabitatId};
 use crate::models::item::{Item, ItemId};
+use crate::models::language::LanguageId;
 use crate::models::localized_names::LocalizedStrings;
 use crate::models::shape::{Shape, ShapeId};
+use crate::models::version::VersionId;
 use crate::traits::has_identifier::HasIdentifier;
 use crate::traits::has_localized_names::HasLocalizedNames;
 use crate::types::capture_rate::CaptureRate;
 use crate::types::gender_rate::GenderRate;
+use crate::types::language::Language;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::sync::Arc;
 
 pub type SpeciesId = u16;
@@ -21,6 +25,8 @@ pub struct Species {
     pub id: SpeciesId,
     pub identifier: String,
     pub names: LocalizedStrings,
+    pub flavor_texts: SpeciesFlavorTexts,
+    pub form_description: Option<LocalizedStrings>,
     pub generation: Arc<Generation>,
     pub evolves_from_species_id: Option<SpeciesId>,
     pub baby_trigger_item: Option<Arc<Item>>,
@@ -45,6 +51,8 @@ pub struct UnlinkedSpecies {
     pub id: SpeciesId,
     pub identifier: String,
     pub names: LocalizedStrings,
+    pub flavor_texts: SpeciesFlavorTexts,
+    pub form_description: Option<LocalizedStrings>,
     pub generation_id: GenerationId,
     pub evolves_from_species_id: Option<SpeciesId>,
     pub baby_trigger_item_id: Option<ItemId>,
@@ -137,6 +145,8 @@ impl Linkable for UnlinkedSpecies {
             id: self.id,
             identifier: self.identifier.clone(),
             names: self.names.clone(),
+            flavor_texts: self.flavor_texts.clone(),
+            form_description: self.form_description.clone(),
             generation,
             evolves_from_species_id: self.evolves_from_species_id,
             baby_trigger_item,
@@ -158,6 +168,35 @@ impl Linkable for UnlinkedSpecies {
 
         Arc::new(species)
     }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SpeciesFlavorTexts(HashMap<LanguageId, Vec<SpeciesFlavorText>>);
+
+impl SpeciesFlavorTexts {
+    pub fn new(texts: HashMap<LanguageId, Vec<SpeciesFlavorText>>) -> Self {
+        Self(texts)
+    }
+
+    pub fn get_by_language(&self, language: Language) -> Option<&Vec<SpeciesFlavorText>> {
+        let language_id = language as LanguageId;
+        if let Some(target) = self.0.get(&language_id) {
+            return Some(target);
+        }
+
+        let default_language_id = Language::default() as LanguageId;
+        if let Some(default) = self.0.get(&default_language_id) {
+            return Some(default);
+        }
+
+        None
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SpeciesFlavorText {
+    pub version_id: VersionId,
+    pub flavor_text: String,
 }
 
 impl HasIdentifier for Species {
