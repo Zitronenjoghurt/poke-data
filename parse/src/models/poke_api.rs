@@ -31,6 +31,7 @@ pub mod encounter_slots;
 pub mod evolution_chains;
 pub mod evolution_trigger_prose;
 pub mod evolution_triggers;
+pub mod evolutions;
 pub mod experience;
 pub mod generation;
 pub mod generation_names;

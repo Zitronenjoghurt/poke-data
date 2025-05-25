@@ -68,6 +68,8 @@ impl IntoModel<UnlinkedSpecies> for PokemonSpeciesData {
             .get(&self.id)
             .map(|descriptions| descriptions.clone().into_model(data));
 
+        let evolutions = data.evolutions.get_model(&self.id, data);
+
         UnlinkedSpecies {
             id: self.id,
             identifier: self.identifier,
@@ -77,6 +79,7 @@ impl IntoModel<UnlinkedSpecies> for PokemonSpeciesData {
             generation_id: self.generation_id,
             evolves_from_species_id: self.evolves_from_species_id,
             baby_trigger_item_id: evolution_chain.baby_trigger_item_id,
+            evolutions,
             color_id: self.color_id,
             shape_id: self.shape_id,
             habitat_id: self.habitat_id,

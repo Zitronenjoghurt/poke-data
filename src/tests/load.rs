@@ -164,6 +164,16 @@ fn test_species() {
     assert_eq!(snorlax.identifier, "snorlax");
     assert_eq!(snorlax.generation.identifier, "generation-i");
     assert_eq!(snorlax.growth_rate.identifier, "slow");
+
+    let pikachu = data.species.find_by_name("pikachu", 0.5).unwrap();
+    assert_eq!(pikachu.identifier, "pikachu");
+    let evolution = &pikachu.evolutions[0];
+    assert_eq!(evolution.evolves_into_species_id, 26);
+    assert_eq!(evolution.trigger.identifier, "use-item");
+    assert_eq!(
+        evolution.trigger_item.clone().unwrap().identifier,
+        "thunder-stone"
+    );
 }
 
 #[test]

@@ -8,6 +8,7 @@ use crate::models::item::{Item, ItemId};
 use crate::models::language::LanguageId;
 use crate::models::localized_names::LocalizedStrings;
 use crate::models::shape::{Shape, ShapeId};
+use crate::models::species::evolution::{Evolution, UnlinkedEvolution};
 use crate::models::version::VersionId;
 use crate::traits::has_identifier::HasIdentifier;
 use crate::traits::has_localized_names::HasLocalizedNames;
@@ -17,6 +18,8 @@ use crate::types::language::Language;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
+
+pub mod evolution;
 
 pub type SpeciesId = u16;
 
@@ -30,6 +33,7 @@ pub struct Species {
     pub generation: Arc<Generation>,
     pub evolves_from_species_id: Option<SpeciesId>,
     pub baby_trigger_item: Option<Arc<Item>>,
+    pub evolutions: Vec<Evolution>,
     pub color: Arc<Color>,
     pub shape: Arc<Shape>,
     pub habitat: Option<Arc<Habitat>>,
@@ -56,6 +60,7 @@ pub struct UnlinkedSpecies {
     pub generation_id: GenerationId,
     pub evolves_from_species_id: Option<SpeciesId>,
     pub baby_trigger_item_id: Option<ItemId>,
+    pub evolutions: Vec<UnlinkedEvolution>,
     pub color_id: ColorId,
     pub shape_id: ShapeId,
     pub habitat_id: Option<HabitatId>,
@@ -99,6 +104,12 @@ impl Linkable for UnlinkedSpecies {
                 })
                 .clone()
         });
+
+        let evolutions = self
+            .evolutions
+            .iter()
+            .map(|evolution| evolution.link(context))
+            .collect();
 
         let color = context
             .colors
@@ -150,6 +161,7 @@ impl Linkable for UnlinkedSpecies {
             generation,
             evolves_from_species_id: self.evolves_from_species_id,
             baby_trigger_item,
+            evolutions,
             color,
             shape,
             habitat,

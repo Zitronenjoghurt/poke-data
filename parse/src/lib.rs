@@ -28,6 +28,7 @@ use crate::models::poke_api::encounter_slots::EncounterSlotData;
 use crate::models::poke_api::evolution_chains::{EvolutionChainData, EvolutionChainId};
 use crate::models::poke_api::evolution_trigger_prose::EvolutionTriggerProseData;
 use crate::models::poke_api::evolution_triggers::EvolutionTriggerData;
+use crate::models::poke_api::evolutions::EvolutionData;
 use crate::models::poke_api::experience::ExperienceData;
 use crate::models::poke_api::generation::GenerationData;
 use crate::models::poke_api::generation_names::GenerationNameData;
@@ -196,6 +197,7 @@ pub struct RawData {
     pub encounter_slots: HashMap<EncounterSlotId, EncounterSlotData>,
     pub egg_groups: HashMap<EggGroupId, EggGroupData>,
     pub egg_group_prose: HashMap<EggGroupId, Vec<EggGroupProseData>>,
+    pub evolutions: HashMap<SpeciesId, Vec<EvolutionData>>,
     pub evolution_chains: HashMap<EvolutionChainId, EvolutionChainData>,
     pub evolution_triggers: HashMap<EvolutionTriggerId, EvolutionTriggerData>,
     pub evolution_trigger_prose: HashMap<EvolutionTriggerId, Vec<EvolutionTriggerProseData>>,
@@ -282,6 +284,24 @@ pub struct RawData {
 
 impl RawData {
     pub async fn load(base_path: &Path) -> Result<Self, Box<dyn Error>> {
+        let species = PokemonSpeciesData::load(base_path).await?.into_id_map();
+        let evolutions_raw = EvolutionData::load(base_path).await?;
+        let evolutions = evolutions_raw
+            .iter()
+            .map(|evolution| {
+                // Map evolution data to the species they are relevant to
+                let evolves_into = species.get(&evolution.evolved_species_id).unwrap();
+                let evolves_from_id = evolves_into.evolves_from_species_id.unwrap();
+                (evolves_from_id, evolution.clone())
+            })
+            .fold(
+                HashMap::new(),
+                |mut acc: HashMap<SpeciesId, Vec<EvolutionData>>, (evolves_from_id, evolution)| {
+                    acc.entry(evolves_from_id).or_default().push(evolution);
+                    acc
+                },
+            );
+
         Ok(Self {
             abilities: AbilityData::load(base_path).await?.into_id_map(),
             ability_changelogs: AbilityChangelogData::load(base_path)
@@ -344,6 +364,7 @@ impl RawData {
             egg_group_prose: EggGroupProseData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
+            evolutions,
             evolution_chains: EvolutionChainData::load(base_path).await?.into_id_map(),
             evolution_triggers: EvolutionTriggerData::load(base_path).await?.into_id_map(),
             evolution_trigger_prose: EvolutionTriggerProseData::load(base_path)
@@ -488,7 +509,7 @@ impl RawData {
             region_names: RegionNameData::load(base_path).await?.into_id_map_grouped(),
             shapes: ShapeData::load(base_path).await?.into_id_map(),
             shape_prose: ShapeProseData::load(base_path).await?.into_id_map_grouped(),
-            species: PokemonSpeciesData::load(base_path).await?.into_id_map(),
+            species,
             species_flavor_texts: PokemonSpeciesFlavorTextData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
