@@ -43,6 +43,7 @@ use crate::models::location::{Location, LocationId};
 use crate::models::location_area::{LocationArea, LocationAreaId};
 use crate::models::pokedex::{Pokedex, PokedexId};
 use crate::models::pokemon::{Pokemon, PokemonId};
+use crate::models::pokemon_form::{PokemonForm, PokemonFormId};
 use crate::models::pokemon_move::{PokemonMove, PokemonMoveId};
 use crate::models::pokemon_move_ailment::{PokemonMoveAilment, PokemonMoveAilmentId};
 use crate::models::pokemon_move_category::{PokemonMoveCategory, PokemonMoveCategoryId};
@@ -96,6 +97,7 @@ pub struct LinkContext {
     pub move_targets: HashMap<PokemonMoveTargetId, Arc<PokemonMoveTarget>>,
     pub pokedexes: HashMap<PokedexId, Arc<Pokedex>>,
     pub pokemon: HashMap<PokemonId, Arc<Pokemon>>,
+    pub pokemon_forms: HashMap<PokemonFormId, Arc<PokemonForm>>,
     pub pokemon_types: HashMap<PokemonTypeId, Arc<PokemonType>>,
     pub pokemon_type_efficacies: PokemonTypeEfficaciesCollection,
     pub regions: HashMap<RegionId, Arc<Region>>,

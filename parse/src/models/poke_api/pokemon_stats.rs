@@ -2,8 +2,8 @@ use crate::models::poke_api::PokeApiModel;
 use crate::traits::has_id::HasId;
 use crate::traits::into_model::IntoModel;
 use crate::RawData;
+use poke_data::models::base_stats::BaseStats;
 use poke_data::models::pokemon::PokemonId;
-use poke_data::types::base_stats::BaseStats;
 use poke_data::types::stat::Stat;
 use serde::{Deserialize, Serialize};
 

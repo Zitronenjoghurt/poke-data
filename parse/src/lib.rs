@@ -87,6 +87,10 @@ use crate::models::poke_api::pokemon_abilities::PokemonAbilityData;
 use crate::models::poke_api::pokemon_color_names::ColorNameData;
 use crate::models::poke_api::pokemon_colors::ColorData;
 use crate::models::poke_api::pokemon_dex_numbers::PokemonDexNumberData;
+use crate::models::poke_api::pokemon_form_names::PokemonFormNameData;
+use crate::models::poke_api::pokemon_form_pokeathlon_stats::PokemonFormPokeathlonStatData;
+use crate::models::poke_api::pokemon_form_types::PokemonFormTypeData;
+use crate::models::poke_api::pokemon_forms::PokemonFormData;
 use crate::models::poke_api::pokemon_habitat_names::HabitatNameData;
 use crate::models::poke_api::pokemon_habitats::HabitatData;
 use crate::models::poke_api::pokemon_move_map::PokemonMoveMapData;
@@ -144,6 +148,7 @@ use poke_data::models::location::LocationId;
 use poke_data::models::location_area::LocationAreaId;
 use poke_data::models::pokedex::PokedexId;
 use poke_data::models::pokemon::PokemonId;
+use poke_data::models::pokemon_form::PokemonFormId;
 use poke_data::models::pokemon_move::PokemonMoveId;
 use poke_data::models::pokemon_move_ailment::PokemonMoveAilmentId;
 use poke_data::models::pokemon_move_category::PokemonMoveCategoryId;
@@ -255,6 +260,11 @@ pub struct RawData {
     pub pokedex_version_groups: HashMap<PokedexId, Vec<PokedexVersionGroupData>>,
     pub pokemon_dex_numbers: HashMap<PokedexId, Vec<PokemonDexNumberData>>,
     pub pokemon: HashMap<PokemonId, PokemonData>,
+    pub pokemon_forms: HashMap<PokemonFormId, PokemonFormData>,
+    pub pokemon_form_names: HashMap<PokemonFormId, Vec<PokemonFormNameData>>,
+    pub pokemon_form_pokeathlon_stats: HashMap<PokemonFormId, Vec<PokemonFormPokeathlonStatData>>,
+    pub pokemon_form_types: HashMap<PokemonFormId, Vec<PokemonFormTypeData>>,
+    pub pokemon_form_id_map: HashMap<PokemonId, Vec<PokemonFormId>>,
     pub pokemon_move_map: HashMap<PokemonId, Vec<PokemonMoveMapData>>,
     pub pokemon_stats: HashMap<PokemonId, Vec<PokemonStatData>>,
     pub pokemon_types: HashMap<PokemonTypeId, PokemonTypeData>,
@@ -298,6 +308,21 @@ impl RawData {
                 HashMap::new(),
                 |mut acc: HashMap<SpeciesId, Vec<EvolutionData>>, (evolves_from_id, evolution)| {
                     acc.entry(evolves_from_id).or_default().push(evolution);
+                    acc
+                },
+            );
+
+        let pokemon_forms = PokemonFormData::load(base_path).await?.into_id_map();
+        let pokemon_form_id_map = pokemon_forms
+            .iter()
+            .map(|(form_id, entry)| {
+                // Map pokemon forms to their respective pokemon
+                (entry.pokemon_id, form_id)
+            })
+            .fold(
+                HashMap::new(),
+                |mut acc: HashMap<SpeciesId, Vec<PokemonFormId>>, (pokemon_id, form_id)| {
+                    acc.entry(pokemon_id).or_default().push(*form_id);
                     acc
                 },
             );
@@ -484,6 +509,17 @@ impl RawData {
             pokemon_abilities: PokemonAbilityData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
+            pokemon_forms,
+            pokemon_form_names: PokemonFormNameData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            pokemon_form_pokeathlon_stats: PokemonFormPokeathlonStatData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            pokemon_form_types: PokemonFormTypeData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            pokemon_form_id_map,
             pokemon_move_map: PokemonMoveMapData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
@@ -572,6 +608,7 @@ impl RawData {
             move_targets: self.move_targets.clone().into_model(self),
             pokedexes: self.pokedexes.clone().into_model(self),
             pokemon: self.pokemon.clone().into_model(self),
+            pokemon_forms: self.pokemon_forms.clone().into_model(self),
             pokemon_types: self.pokemon_types.clone().into_model(self),
             pokemon_type_efficacies: self.pokemon_type_efficacies.clone().into_model(self),
             pokemon_type_efficacies_past: self

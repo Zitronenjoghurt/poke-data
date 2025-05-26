@@ -1,13 +1,14 @@
 use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
+use crate::models::base_stats::BaseStats;
 use crate::models::encounter::Encounter;
 use crate::models::generation::GenerationId;
 use crate::models::pokemon::ability::{PokemonAbility, UnlinkedPokemonAbility};
 use crate::models::pokemon::moveset::{Moveset, UnlinkedMoveset};
+use crate::models::pokemon_form::{PokemonForm, PokemonFormId};
 use crate::models::species::{Species, SpeciesId};
 use crate::models::version::VersionId;
 use crate::traits::has_identifier::HasIdentifier;
-use crate::types::base_stats::BaseStats;
 use crate::types::pokemon_type::Type;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -37,6 +38,8 @@ pub struct Pokemon {
     pub abilities: Vec<PokemonAbility>,
     pub moveset: Moveset,
     pub encounters: HashMap<VersionId, Vec<Arc<Encounter>>>,
+    pub default_form: Option<Arc<PokemonForm>>,
+    pub forms: Vec<Arc<PokemonForm>>,
 }
 
 impl Pokemon {
@@ -72,6 +75,7 @@ pub struct UnlinkedPokemon {
     pub is_default: bool,
     pub abilities: Vec<UnlinkedPokemonAbility>,
     pub moveset: UnlinkedMoveset,
+    pub form_ids: Vec<PokemonFormId>,
 }
 
 impl Linkable for UnlinkedPokemon {
@@ -114,6 +118,25 @@ impl Linkable for UnlinkedPokemon {
             },
         );
 
+        let forms: Vec<Arc<PokemonForm>> = self
+            .form_ids
+            .iter()
+            .map(|form_id| {
+                context
+                    .pokemon_forms
+                    .get(form_id)
+                    .unwrap_or_else(|| {
+                        panic!(
+                            "No pokemon form '{}' found for pokemon '{}'",
+                            form_id, self.id
+                        )
+                    })
+                    .clone()
+            })
+            .collect();
+
+        let default_form = forms.iter().find(|form| form.is_default).cloned();
+
         let pokemon = Pokemon {
             id: self.id,
             identifier: self.identifier.clone(),
@@ -129,6 +152,8 @@ impl Linkable for UnlinkedPokemon {
             abilities,
             moveset,
             encounters,
+            default_form,
+            forms,
         };
 
         Arc::new(pokemon)

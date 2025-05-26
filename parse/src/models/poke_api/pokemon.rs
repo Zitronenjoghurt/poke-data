@@ -49,6 +49,11 @@ impl IntoModel<UnlinkedPokemon> for PokemonData {
             is_default: self.is_default == 1,
             abilities: data.pokemon_abilities.get_model(&self.id, data),
             moveset: data.pokemon_move_map.get_model(&self.id, data),
+            form_ids: data
+                .pokemon_form_id_map
+                .get(&self.id)
+                .cloned()
+                .unwrap_or_default(),
         }
     }
 }

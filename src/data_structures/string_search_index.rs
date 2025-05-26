@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use strsim::jaro_winkler;
+use strsim::jaro;
 
 pub struct StringSearchIndex<V> {
     dictionary: HashMap<String, V>,
@@ -14,7 +14,7 @@ impl<V> StringSearchIndex<V> {
         let mut results = Vec::new();
 
         for (key, value) in &self.dictionary {
-            let similarity = jaro_winkler(query, key);
+            let similarity = jaro(query, key);
             if similarity >= threshold {
                 results.push((value, similarity));
             }

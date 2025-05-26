@@ -30,6 +30,7 @@ use crate::models::location::{LocationId, UnlinkedLocation};
 use crate::models::location_area::{LocationAreaId, UnlinkedLocationArea};
 use crate::models::pokedex::{PokedexId, UnlinkedPokedex};
 use crate::models::pokemon::{PokemonId, UnlinkedPokemon};
+use crate::models::pokemon_form::{PokemonFormId, UnlinkedPokemonForm};
 use crate::models::pokemon_move::{PokemonMoveId, UnlinkedPokemonMove};
 use crate::models::pokemon_move_ailment::{PokemonMoveAilment, PokemonMoveAilmentId};
 use crate::models::pokemon_move_category::{PokemonMoveCategory, PokemonMoveCategoryId};
@@ -90,6 +91,7 @@ pub struct UnlinkedPokeData {
     pub move_targets: HashMap<PokemonMoveTargetId, PokemonMoveTarget>,
     pub pokedexes: HashMap<PokedexId, UnlinkedPokedex>,
     pub pokemon: HashMap<PokemonId, UnlinkedPokemon>,
+    pub pokemon_forms: HashMap<PokemonFormId, UnlinkedPokemonForm>,
     pub pokemon_types: HashMap<PokemonTypeId, UnlinkedPokemonType>,
     pub pokemon_type_efficacies: PokemonTypeEfficacies,
     pub pokemon_type_efficacies_past: PokemonTypeEfficaciesByGeneration,
@@ -152,6 +154,8 @@ impl UnlinkedPokeData {
 
         context.version_groups = self.version_groups.link(&context);
         context.versions = self.versions.link(&context);
+
+        context.pokemon_forms = self.pokemon_forms.link(&context);
 
         context.moves = self.moves.link(&context);
 
