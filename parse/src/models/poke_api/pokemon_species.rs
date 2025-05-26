@@ -94,6 +94,7 @@ impl IntoModel<UnlinkedSpecies> for PokemonSpeciesData {
             is_legendary: self.is_legendary == 1,
             is_mythical: self.is_mythical == 1,
             order: self.order,
+            egg_group_ids: data.pokemon_egg_groups.get_model(&self.id, data),
         }
     }
 }

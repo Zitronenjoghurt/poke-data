@@ -54,6 +54,7 @@ impl IntoModel<UnlinkedPokemon> for PokemonData {
                 .get(&self.id)
                 .cloned()
                 .unwrap_or_default(),
+            wild_items: data.pokemon_items.get_model(&self.id, data),
         }
     }
 }

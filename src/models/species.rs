@@ -1,6 +1,7 @@
 use crate::data::link_context::LinkContext;
 use crate::data::linkable::Linkable;
 use crate::models::color::{Color, ColorId};
+use crate::models::egg_group::{EggGroup, EggGroupId};
 use crate::models::generation::{Generation, GenerationId};
 use crate::models::growth_rate::{GrowthRate, GrowthRateId};
 use crate::models::habitat::{Habitat, HabitatId};
@@ -48,6 +49,7 @@ pub struct Species {
     pub is_legendary: bool,
     pub is_mythical: bool,
     pub order: u16,
+    pub egg_groups: Vec<Arc<EggGroup>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -75,6 +77,7 @@ pub struct UnlinkedSpecies {
     pub is_legendary: bool,
     pub is_mythical: bool,
     pub order: u16,
+    pub egg_group_ids: Vec<EggGroupId>,
 }
 
 impl Linkable for UnlinkedSpecies {
@@ -152,6 +155,23 @@ impl Linkable for UnlinkedSpecies {
             })
             .clone();
 
+        let egg_groups = self
+            .egg_group_ids
+            .iter()
+            .map(|egg_group_id| {
+                context
+                    .egg_groups
+                    .get(egg_group_id)
+                    .unwrap_or_else(|| {
+                        panic!(
+                            "No egg group '{}' found for pokemon '{}'",
+                            egg_group_id, self.id
+                        )
+                    })
+                    .clone()
+            })
+            .collect();
+
         let species = Species {
             id: self.id,
             identifier: self.identifier.clone(),
@@ -176,6 +196,7 @@ impl Linkable for UnlinkedSpecies {
             is_legendary: self.is_legendary,
             is_mythical: self.is_mythical,
             order: self.order,
+            egg_groups,
         };
 
         Arc::new(species)

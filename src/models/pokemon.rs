@@ -5,6 +5,7 @@ use crate::models::encounter::Encounter;
 use crate::models::generation::GenerationId;
 use crate::models::pokemon::ability::{PokemonAbility, UnlinkedPokemonAbility};
 use crate::models::pokemon::moveset::{Moveset, UnlinkedMoveset};
+use crate::models::pokemon::wild_item::{PokemonWildItems, UnlinkedPokemonWildItems};
 use crate::models::pokemon_form::{PokemonForm, PokemonFormId};
 use crate::models::species::{Species, SpeciesId};
 use crate::models::version::VersionId;
@@ -16,6 +17,7 @@ use std::sync::Arc;
 
 pub mod ability;
 pub mod moveset;
+pub mod wild_item;
 
 pub type PokemonId = u16;
 
@@ -40,6 +42,7 @@ pub struct Pokemon {
     pub encounters: HashMap<VersionId, Vec<Arc<Encounter>>>,
     pub default_form: Option<Arc<PokemonForm>>,
     pub forms: Vec<Arc<PokemonForm>>,
+    pub wild_items: PokemonWildItems,
 }
 
 impl Pokemon {
@@ -76,6 +79,7 @@ pub struct UnlinkedPokemon {
     pub abilities: Vec<UnlinkedPokemonAbility>,
     pub moveset: UnlinkedMoveset,
     pub form_ids: Vec<PokemonFormId>,
+    pub wild_items: UnlinkedPokemonWildItems,
 }
 
 impl Linkable for UnlinkedPokemon {
@@ -137,6 +141,8 @@ impl Linkable for UnlinkedPokemon {
 
         let default_form = forms.iter().find(|form| form.is_default).cloned();
 
+        let wild_items = self.wild_items.link(context);
+
         let pokemon = Pokemon {
             id: self.id,
             identifier: self.identifier.clone(),
@@ -154,6 +160,7 @@ impl Linkable for UnlinkedPokemon {
             encounters,
             default_form,
             forms,
+            wild_items,
         };
 
         Arc::new(pokemon)

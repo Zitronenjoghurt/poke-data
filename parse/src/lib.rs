@@ -87,12 +87,14 @@ use crate::models::poke_api::pokemon_abilities::PokemonAbilityData;
 use crate::models::poke_api::pokemon_color_names::ColorNameData;
 use crate::models::poke_api::pokemon_colors::ColorData;
 use crate::models::poke_api::pokemon_dex_numbers::PokemonDexNumberData;
+use crate::models::poke_api::pokemon_egg_groups::PokemonEggGroupData;
 use crate::models::poke_api::pokemon_form_names::PokemonFormNameData;
 use crate::models::poke_api::pokemon_form_pokeathlon_stats::PokemonFormPokeathlonStatData;
 use crate::models::poke_api::pokemon_form_types::PokemonFormTypeData;
 use crate::models::poke_api::pokemon_forms::PokemonFormData;
 use crate::models::poke_api::pokemon_habitat_names::HabitatNameData;
 use crate::models::poke_api::pokemon_habitats::HabitatData;
+use crate::models::poke_api::pokemon_items::PokemonItemData;
 use crate::models::poke_api::pokemon_move_map::PokemonMoveMapData;
 use crate::models::poke_api::pokemon_shape_prose::ShapeProseData;
 use crate::models::poke_api::pokemon_shapes::ShapeData;
@@ -260,11 +262,13 @@ pub struct RawData {
     pub pokedex_version_groups: HashMap<PokedexId, Vec<PokedexVersionGroupData>>,
     pub pokemon_dex_numbers: HashMap<PokedexId, Vec<PokemonDexNumberData>>,
     pub pokemon: HashMap<PokemonId, PokemonData>,
+    pub pokemon_egg_groups: HashMap<SpeciesId, Vec<PokemonEggGroupData>>,
     pub pokemon_forms: HashMap<PokemonFormId, PokemonFormData>,
     pub pokemon_form_names: HashMap<PokemonFormId, Vec<PokemonFormNameData>>,
     pub pokemon_form_pokeathlon_stats: HashMap<PokemonFormId, Vec<PokemonFormPokeathlonStatData>>,
     pub pokemon_form_types: HashMap<PokemonFormId, Vec<PokemonFormTypeData>>,
     pub pokemon_form_id_map: HashMap<PokemonId, Vec<PokemonFormId>>,
+    pub pokemon_items: HashMap<PokemonId, Vec<PokemonItemData>>,
     pub pokemon_move_map: HashMap<PokemonId, Vec<PokemonMoveMapData>>,
     pub pokemon_stats: HashMap<PokemonId, Vec<PokemonStatData>>,
     pub pokemon_types: HashMap<PokemonTypeId, PokemonTypeData>,
@@ -509,6 +513,9 @@ impl RawData {
             pokemon_abilities: PokemonAbilityData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
+            pokemon_egg_groups: PokemonEggGroupData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             pokemon_forms,
             pokemon_form_names: PokemonFormNameData::load(base_path)
                 .await?
@@ -520,6 +527,9 @@ impl RawData {
                 .await?
                 .into_id_map_grouped(),
             pokemon_form_id_map,
+            pokemon_items: PokemonItemData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
             pokemon_move_map: PokemonMoveMapData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
