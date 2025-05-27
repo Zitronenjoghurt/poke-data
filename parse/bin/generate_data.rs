@@ -1,7 +1,4 @@
-use flate2::write::ZlibEncoder;
-use flate2::Compression;
 use poke_data_parse::RawData;
-use std::io::Write;
 use std::path::PathBuf;
 
 #[tokio::main]
@@ -12,9 +9,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let encoded_data = bincode::serialize(&parsed_data)?;
 
     let output_path = PathBuf::from("../data.bin");
-    let mut compressor = ZlibEncoder::new(Vec::new(), Compression::best());
-    compressor.write_all(&encoded_data)?;
-    let compressed_data = compressor.finish()?;
+    let compressed_data = zstd::encode_all(encoded_data.as_slice(), 22)?;
     std::fs::write(output_path, compressed_data)?;
     Ok(())
 }

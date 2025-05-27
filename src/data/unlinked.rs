@@ -49,10 +49,8 @@ use crate::models::super_contest_effect::{SuperContestEffect, SuperContestEffect
 use crate::models::version::{UnlinkedVersion, VersionId};
 use crate::models::version_group::{UnlinkedVersionGroup, VersionGroupId};
 use crate::traits::into_arc_map::IntoArcMap;
-use flate2::read::ZlibDecoder;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::io::Read;
 use std::path::Path;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
@@ -106,9 +104,7 @@ pub struct UnlinkedPokeData {
 impl UnlinkedPokeData {
     pub fn load(compressed_data_path: &Path) -> Result<Self, Box<dyn std::error::Error>> {
         let data = std::fs::read(compressed_data_path)?;
-        let mut decompressor = ZlibDecoder::new(data.as_slice());
-        let mut decompressed_data = Vec::new();
-        decompressor.read_to_end(&mut decompressed_data)?;
+        let decompressed_data = zstd::decode_all(data.as_slice())?;
         Ok(bincode::deserialize(&decompressed_data)?)
     }
 
