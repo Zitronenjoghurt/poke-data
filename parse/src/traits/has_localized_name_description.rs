@@ -1,5 +1,5 @@
 use crate::traits::into_model::IntoModel;
-use crate::RawData;
+use crate::raw_data::RawData;
 use poke_data::models::language::LanguageId;
 use poke_data::models::localized_name_descriptions::{
     LocalizedNameDescription, LocalizedNameDescriptions,

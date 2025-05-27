@@ -28,6 +28,7 @@ pub mod localized_name_descriptions;
 pub mod localized_names;
 pub mod location;
 pub mod location_area;
+pub mod png_asset;
 pub mod pokeathlon_stats;
 pub mod pokedex;
 pub mod pokemon;

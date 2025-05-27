@@ -1,4 +1,4 @@
-use crate::RawData;
+use crate::raw_data::RawData;
 use std::collections::HashMap;
 
 pub trait IntoModel<T> {

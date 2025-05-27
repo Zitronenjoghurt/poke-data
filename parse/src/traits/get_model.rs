@@ -1,5 +1,5 @@
 use crate::traits::into_model::IntoModel;
-use crate::RawData;
+use crate::raw_data::RawData;
 use std::collections::HashMap;
 use std::hash::Hash;
 

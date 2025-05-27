@@ -1,6 +1,6 @@
 use crate::models::poke_api::PokeApiModel;
 use crate::traits::into_model::IntoModel;
-use crate::RawData;
+use crate::raw_data::RawData;
 use poke_data::models::evolution_trigger::EvolutionTriggerId;
 use poke_data::models::item::ItemId;
 use poke_data::models::location::LocationId;

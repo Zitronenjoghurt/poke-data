@@ -1,6 +1,6 @@
 use crate::models::poke_api::PokeApiModel;
 use crate::traits::into_model::IntoModel;
-use crate::RawData;
+use crate::raw_data::RawData;
 use poke_data::models::generation::GenerationId;
 use poke_data::models::pokemon_type::PokemonTypeId;
 use poke_data::models::pokemon_type_efficacies::{

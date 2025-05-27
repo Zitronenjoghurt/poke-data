@@ -3,7 +3,7 @@ use crate::models::poke_api::PokeApiModel;
 use crate::traits::get_model::GetModel;
 use crate::traits::has_id::HasId;
 use crate::traits::into_model::IntoModel;
-use crate::RawData;
+use crate::raw_data::RawData;
 use poke_data::models::color::ColorId;
 use poke_data::models::generation::GenerationId;
 use poke_data::models::growth_rate::GrowthRateId;

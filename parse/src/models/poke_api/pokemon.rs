@@ -1,8 +1,8 @@
 use crate::models::poke_api::PokeApiModel;
+use crate::raw_data::RawData;
 use crate::traits::get_model::GetModel;
 use crate::traits::has_id::HasId;
 use crate::traits::into_model::IntoModel;
-use crate::RawData;
 use poke_data::models::pokemon::{PokemonId, UnlinkedPokemon};
 use poke_data::models::species::SpeciesId;
 use serde::{Deserialize, Serialize};

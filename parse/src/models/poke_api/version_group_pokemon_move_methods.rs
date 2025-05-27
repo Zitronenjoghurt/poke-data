@@ -1,7 +1,7 @@
 use crate::models::poke_api::PokeApiModel;
 use crate::traits::has_id::HasId;
 use crate::traits::into_model::IntoModel;
-use crate::RawData;
+use crate::raw_data::RawData;
 use poke_data::models::pokemon_move_method::PokemonMoveMethodId;
 use poke_data::models::version_group::VersionGroupId;
 use serde::{Deserialize, Serialize};

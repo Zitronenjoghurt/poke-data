@@ -1,7 +1,7 @@
 use crate::models::poke_api::PokeApiModel;
 use crate::traits::has_id::HasId;
 use crate::traits::into_model::IntoModel;
-use crate::RawData;
+use crate::raw_data::RawData;
 use poke_data::models::egg_group::EggGroupId;
 use poke_data::models::species::SpeciesId;
 use serde::{Deserialize, Serialize};

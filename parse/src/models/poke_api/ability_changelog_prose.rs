@@ -2,7 +2,7 @@ use crate::models::poke_api::ability_changelog::AbilityChangelogId;
 use crate::models::poke_api::PokeApiModel;
 use crate::traits::has_id::HasId;
 use crate::traits::into_model::IntoModel;
-use crate::RawData;
+use crate::raw_data::RawData;
 use poke_data::models::ability::AbilityChangelogEntry;
 use poke_data::models::language::LanguageId;
 use serde::{Deserialize, Serialize};

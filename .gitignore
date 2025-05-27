@@ -17,3 +17,4 @@ target/
 .idea/
 /data/
 tarpaulin-report.html
+assets.bin

@@ -13,6 +13,7 @@ use crate::collections::pokemon_type_efficacies::PokemonTypeEfficaciesCollection
 use crate::collections::regions::RegionsCollection;
 use crate::collections::species::SpeciesCollection;
 use crate::collections::versions::VersionsCollection;
+use crate::INCLUDED_DATA;
 use std::path::Path;
 use unlinked::UnlinkedPokeData;
 
@@ -39,12 +40,17 @@ pub struct PokeData {
 }
 
 impl PokeData {
-    pub fn load_path(compressed_data_path: &Path) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn load() -> Result<Self, Box<dyn std::error::Error>> {
+        let decompressed_bytes = zstd::decode_all(INCLUDED_DATA)?;
+        PokeData::load_from_bytes(&decompressed_bytes)
+    }
+
+    pub fn load_from_path(compressed_data_path: &Path) -> Result<Self, Box<dyn std::error::Error>> {
         let unlinked_data = UnlinkedPokeData::load(compressed_data_path)?;
         Ok(unlinked_data.initialize())
     }
 
-    pub fn load_bytes(bytes: &[u8]) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn load_from_bytes(bytes: &[u8]) -> Result<Self, Box<dyn std::error::Error>> {
         let unlinked_data = UnlinkedPokeData::from_bytes(bytes)?;
         Ok(unlinked_data.initialize())
     }
