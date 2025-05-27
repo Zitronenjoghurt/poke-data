@@ -84,6 +84,7 @@ use crate::models::poke_api::pokedex_version_groups::PokedexVersionGroupData;
 use crate::models::poke_api::pokedexes::PokedexData;
 use crate::models::poke_api::pokemon::PokemonData;
 use crate::models::poke_api::pokemon_abilities::PokemonAbilityData;
+use crate::models::poke_api::pokemon_abilities_past::PokemonAbilityPastData;
 use crate::models::poke_api::pokemon_color_names::ColorNameData;
 use crate::models::poke_api::pokemon_colors::ColorData;
 use crate::models::poke_api::pokemon_dex_numbers::PokemonDexNumberData;
@@ -262,6 +263,8 @@ pub struct RawData {
     pub pokedex_version_groups: HashMap<PokedexId, Vec<PokedexVersionGroupData>>,
     pub pokemon_dex_numbers: HashMap<PokedexId, Vec<PokemonDexNumberData>>,
     pub pokemon: HashMap<PokemonId, PokemonData>,
+    pub pokemon_abilities: HashMap<PokemonId, Vec<PokemonAbilityData>>,
+    pub pokemon_abilities_past: HashMap<PokemonId, Vec<PokemonAbilityPastData>>,
     pub pokemon_egg_groups: HashMap<SpeciesId, Vec<PokemonEggGroupData>>,
     pub pokemon_forms: HashMap<PokemonFormId, PokemonFormData>,
     pub pokemon_form_names: HashMap<PokemonFormId, Vec<PokemonFormNameData>>,
@@ -278,7 +281,6 @@ pub struct RawData {
     pub pokemon_type_game_indices: HashMap<PokemonTypeId, Vec<PokemonTypeGameIndexData>>,
     pub pokemon_type_efficacies: Vec<PokemonTypeEfficacyData>,
     pub pokemon_type_efficacies_past: Vec<PokemonTypeEfficacyPastData>,
-    pub pokemon_abilities: HashMap<PokemonId, Vec<PokemonAbilityData>>,
     pub regions: HashMap<RegionId, RegionData>,
     pub region_names: HashMap<RegionId, Vec<RegionNameData>>,
     pub shapes: HashMap<ShapeId, ShapeData>,
@@ -511,6 +513,9 @@ impl RawData {
                 .into_id_map_grouped(),
             pokemon: PokemonData::load(base_path).await?.into_id_map(),
             pokemon_abilities: PokemonAbilityData::load(base_path)
+                .await?
+                .into_id_map_grouped(),
+            pokemon_abilities_past: PokemonAbilityPastData::load(base_path)
                 .await?
                 .into_id_map_grouped(),
             pokemon_egg_groups: PokemonEggGroupData::load(base_path)

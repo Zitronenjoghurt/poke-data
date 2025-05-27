@@ -155,6 +155,24 @@ fn test_pokemon() {
     assert_eq!(clefairy.get_types(8).clone(), vec![Type::Fairy]);
     assert_eq!(clefairy.get_types(9).clone(), vec![Type::Fairy]);
     assert_eq!(clefairy.get_types(10).clone(), vec![Type::Fairy]);
+
+    let bulbasaur = data.pokemon.find_by_name("bulbasaure", 0.5).unwrap();
+    assert_eq!(bulbasaur.identifier, "bulbasaur");
+    assert_eq!(bulbasaur.get_abilities(1).len(), 1);
+    assert_eq!(bulbasaur.get_abilities(2).len(), 1);
+    assert_eq!(bulbasaur.get_abilities(3).len(), 1);
+    assert_eq!(bulbasaur.get_abilities(4).len(), 1);
+    assert_eq!(bulbasaur.get_abilities(5).len(), 2);
+
+    let overgrow = &bulbasaur.get_abilities(1)[0];
+    assert_eq!(overgrow.ability.identifier, "overgrow");
+
+    let chlorophyll = &bulbasaur
+        .get_abilities(5)
+        .into_iter()
+        .find(|ability| ability.is_hidden)
+        .unwrap();
+    assert_eq!(chlorophyll.ability.identifier, "chlorophyll");
 }
 
 #[test]

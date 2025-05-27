@@ -3,7 +3,9 @@ use crate::data::linkable::Linkable;
 use crate::models::base_stats::BaseStats;
 use crate::models::encounter::Encounter;
 use crate::models::generation::GenerationId;
-use crate::models::pokemon::ability::{PokemonAbility, UnlinkedPokemonAbility};
+use crate::models::pokemon::ability::{
+    PokemonAbilitiesPast, PokemonAbility, UnlinkedPokemonAbilitiesPast, UnlinkedPokemonAbility,
+};
 use crate::models::pokemon::moveset::{Moveset, UnlinkedMoveset};
 use crate::models::pokemon::wild_item::{PokemonWildItems, UnlinkedPokemonWildItems};
 use crate::models::pokemon_form::{PokemonForm, PokemonFormId};
@@ -37,7 +39,8 @@ pub struct Pokemon {
     pub base_experience: u16,
     pub order: Option<u16>,
     pub is_default: bool,
-    pub abilities: Vec<PokemonAbility>,
+    abilities: Vec<PokemonAbility>,
+    past_abilities: PokemonAbilitiesPast,
     pub moveset: Moveset,
     pub encounters: HashMap<VersionId, Vec<Arc<Encounter>>>,
     pub default_form: Option<Arc<PokemonForm>>,
@@ -61,6 +64,56 @@ impl Pokemon {
             None => &self.types,
         }
     }
+
+    pub fn get_abilities(&self, generation_id: GenerationId) -> Vec<PokemonAbility> {
+        if self.past_abilities.is_empty() {
+            return self.abilities.clone();
+        }
+
+        match self
+            .past_abilities
+            .get_map()
+            .keys()
+            .filter(|key| generation_id <= **key)
+            .max()
+        {
+            Some(latest_applicable_gen) => {
+                let past_abilities = self
+                    .past_abilities
+                    .get_abilities(latest_applicable_gen)
+                    .unwrap();
+
+                let mut abilities: Vec<PokemonAbility> = self
+                    .abilities
+                    .iter()
+                    .filter_map(|ability| {
+                        if let Some(past_ability) = past_abilities
+                            .iter()
+                            .find(|past_ability| past_ability.slot == ability.slot)
+                        {
+                            past_ability.to_ability()
+                        } else {
+                            Some(ability.clone())
+                        }
+                    })
+                    .collect();
+
+                past_abilities.iter().for_each(|past_ability| {
+                    if !abilities
+                        .iter()
+                        .any(|ability| ability.slot == past_ability.slot)
+                    {
+                        if let Some(past_pokemon_ability) = past_ability.to_ability() {
+                            abilities.push(past_pokemon_ability);
+                        }
+                    }
+                });
+
+                abilities
+            }
+            None => self.abilities.clone(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -77,6 +130,7 @@ pub struct UnlinkedPokemon {
     pub order: Option<u16>,
     pub is_default: bool,
     pub abilities: Vec<UnlinkedPokemonAbility>,
+    pub past_abilities: UnlinkedPokemonAbilitiesPast,
     pub moveset: UnlinkedMoveset,
     pub form_ids: Vec<PokemonFormId>,
     pub wild_items: UnlinkedPokemonWildItems,
@@ -98,6 +152,7 @@ impl Linkable for UnlinkedPokemon {
             .clone();
 
         let abilities = self.abilities.link(context);
+        let past_abilities = self.past_abilities.link(context);
         let moveset = self.moveset.link(context);
 
         let relevant_encounters: Vec<Arc<Encounter>> = context
@@ -156,6 +211,7 @@ impl Linkable for UnlinkedPokemon {
             order: self.order,
             is_default: self.is_default,
             abilities,
+            past_abilities,
             moveset,
             encounters,
             default_form,

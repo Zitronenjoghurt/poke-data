@@ -85,6 +85,7 @@ pub mod pokedex_version_groups;
 pub mod pokedexes;
 pub mod pokemon;
 pub mod pokemon_abilities;
+pub mod pokemon_abilities_past;
 pub mod pokemon_color_names;
 pub mod pokemon_colors;
 pub mod pokemon_dex_numbers;
